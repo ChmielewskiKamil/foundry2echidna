@@ -7,7 +7,7 @@ fn main() {
         {
             "transactionType": "CREATE",
             "contractName": "Counter",
-            "contractAddress": "0xD1aE64401d65E9B0d1bF7E08Fbf75bb2F26eF70a",
+            "contractAddress": "0xD1aE64401d65E9B0d1bF7E08Fbf75bb2F26eF70a"
         }
     "#;
 
