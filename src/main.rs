@@ -22,3 +22,21 @@ fn main() {
         println!("Sorry, could not parse JSON.");
     }
 }
+
+mod serialization_tests {
+    use super::*;
+
+    #[test]
+    fn it_should_parse_transaction_type_correctly() {
+        assert_eq!(
+            parse_foundry_broadcast(
+                r#"
+            {
+                "transactionType": "CREATE"
+            }
+        "#
+            ),
+            "CREATE"
+        );
+    }
+}
