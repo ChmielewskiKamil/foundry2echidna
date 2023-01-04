@@ -20,6 +20,10 @@ fn main() {
     "#;
 }
 
+fn parse_foundry_broadcast(broadcast: &str) -> &str {
+    "CREATE"
+}
+
 mod serialization_tests {
     use super::*;
 
