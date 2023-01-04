@@ -1,5 +1,3 @@
-extern crate serde_json;
-
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
