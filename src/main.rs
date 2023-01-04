@@ -15,5 +15,10 @@ fn main() {
 
     if deserialized_result.is_ok() {
         let parsed_result: JsonValue = deserialized_result.unwrap();
+        println!("Type of transaction: {}", parsed_result["transactionType"]);
+        println!("Name of the contract: {}", parsed_result["contractName"]);
+        println!("Deployed to: {}", parsed_result["contractAddress"]);
+    } else {
+        println!("Sorry, could not parse JSON.");
     }
 }
