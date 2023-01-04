@@ -40,4 +40,18 @@ mod serialization_tests {
             "CREATE"
         );
     }
+
+    #[test]
+    fn it_should_parse_contract_name_correctly() {
+        assert_eq!(
+            parse_foundry_broadcast(
+                r#"
+            {
+                "contractName": "Counter"
+            }
+        "#
+            ),
+            "Counter"
+        );
+    }
 }
