@@ -25,3 +25,19 @@ Etheno handles two main groups of events* (via `EventSummaryPlugin`):
 - `value` - Ether sent in the transaction
 
 *_There is also block mined event, but it is not supported yet_
+
+Foundry broadcast structure is more complicated than that, but we only care about a couple of fields.
+Since we want to transform the broadcast into this Etheno-like structure, we must map appropriate fields together.
+
+There are multiple ways of accessing specific fields. Here are some examples that I will test (where `i` is a specific transaction with a receipt):
+
+| Etheno field | Foundry field |
+| --- | --- |
+| `event` | `transactions[i].transaction_type` |
+| `from` | `receipts[i].from` |
+| `to` | `receipts[i].to` |
+| `contract_address` | `receipts[i].contract_address` | 
+| `gas_used` | `receipts[i].gas_used` |
+| `gas_price` | `receipts[i].effective_gas_price` |
+| `data` | `transactions[i].transaction.data` |
+| `value` | `transactions[i].transaction.value` |
