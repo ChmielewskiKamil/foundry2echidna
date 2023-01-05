@@ -1,4 +1,4 @@
-The purpose of this tool is to transform foundry broadcast JSON file to Etheno-like JSON file for seamless Foundry integration with Echidna. 
+The purpose of this tool is to transform the foundry broadcast JSON file to an Etheno-like JSON file for seamless Foundry integration with Echidna.
 
 
 ### Data Model
