@@ -23,7 +23,7 @@ fn main() {
 
 fn parse_foundry_broadcast(broadcast: &str) -> Transaction {
     let parsed: Transaction = serde_json::from_str(broadcast).unwrap();
-    return parsed;
+    parsed
 }
 
 #[cfg(test)]
