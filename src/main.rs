@@ -27,7 +27,7 @@ fn parse_foundry_broadcast(broadcast: &str) -> Transaction {
 }
 
 #[cfg(test)]
-mod serialization_tests {
+mod deserialization_tests {
 
     use super::parse_foundry_broadcast;
 
