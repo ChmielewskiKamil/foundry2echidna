@@ -24,7 +24,7 @@ Etheno handles two main groups of events* (via `EventSummaryPlugin`):
 - `data` - transaction data
 - `value` - Ether sent in the transaction
 
-*_There is also block mined event, but it is not supported yet_
+*_There is also block mined event, but it's not crucial for Echidna setup (?)_
 
 Foundry broadcast structure is more complicated than that, but we only care about a couple of fields.
 Since we want to transform the broadcast into this Etheno-like structure, we must map appropriate fields together.
