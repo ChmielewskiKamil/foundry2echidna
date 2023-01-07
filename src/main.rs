@@ -13,7 +13,6 @@ fn main() -> Result<()> {
 
     // Parse the string of data into serde_json::Value.
     let v: Value = serde_json::from_str(&contents)?;
-    // println!("{:?}", v);
 
     // Manipulate the data as needed
     let mut events = Vec::new();
