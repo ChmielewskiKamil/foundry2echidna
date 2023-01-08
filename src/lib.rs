@@ -1,10 +1,21 @@
+use std::{fs::File, io::Read};
+
+pub fn read_broadcast_file(path_to_file: &str) -> String {
+    let mut file = File::open(path_to_file).unwrap();
+
+    let mut content = String::new();
+    println!("{:?}", file);
+    file.read_to_string(&mut content).unwrap().to_string()
+}
+
 #[cfg(test)]
 mod parser_tests {
     use super::read_broadcast_file;
+
     #[test]
     fn it_should_read_file_content_to_string() {
         assert_eq!(
-            read_broadcast_file("../test_json_files/simple_broadcast_test.json"),
+            read_broadcast_file("test_json_files/simple_broadcast_test.json"),
             r#"{
     "transactions": [
         {
