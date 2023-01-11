@@ -14,6 +14,7 @@ struct Transaction {
 #[derive(Deserialize, Debug, PartialEq)]
 struct TransactionDetails {
     from: String,
+    to: Option<String>,
     gas: String,
     value: String,
     data: String,
