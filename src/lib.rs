@@ -38,6 +38,7 @@ pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
     Ok(content)
 }
 
+#[allow(dead_code)]
 fn deserialize_single_transaction(
     transaction_to_deserialize: String,
 ) -> Result<Transaction, String> {
@@ -46,6 +47,7 @@ fn deserialize_single_transaction(
     Ok(transaction)
 }
 
+#[allow(dead_code)]
 fn deserialize_single_receipt(receipt_to_deserialize: String) -> Receipt {
     let receipt: Receipt = serde_json::from_str(&receipt_to_deserialize).unwrap();
     receipt
