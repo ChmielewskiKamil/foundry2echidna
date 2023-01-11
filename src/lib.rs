@@ -16,7 +16,7 @@ mod parser_tests {
     fn it_should_read_file_content_to_string() {
         assert_eq!(
             read_broadcast_file("test_json_files/simple_broadcast_test.json"),
-            r#"{
+            Ok(r#"{
     "transactions": [
         {
             "transactionType": "CREATE",
@@ -29,7 +29,7 @@ mod parser_tests {
             }
         }
     ]
-}"#
+}"#)
         )
     }
 }
