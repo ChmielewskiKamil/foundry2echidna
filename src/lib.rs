@@ -49,9 +49,9 @@ fn deserialize_single_transaction(
 }
 
 #[allow(dead_code)]
-fn deserialize_single_receipt(receipt_to_deserialize: String) -> Receipt {
+fn deserialize_single_receipt(receipt_to_deserialize: String) -> Result<Receipt, String> {
     let receipt: Receipt = serde_json::from_str(&receipt_to_deserialize).unwrap();
-    receipt
+    Ok(receipt)
 }
 
 #[cfg(test)]
