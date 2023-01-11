@@ -1,4 +1,5 @@
 use serde::Deserialize;
+#[allow(unused_imports)]
 use serde_json::from_str;
 use std::{fs::File, io::Read};
 
