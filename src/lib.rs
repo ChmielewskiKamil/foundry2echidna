@@ -5,7 +5,8 @@ pub fn read_broadcast_file(path_to_file: &str) -> String {
 
     let mut content = String::new();
     println!("{:?}", file);
-    file.read_to_string(&mut content).unwrap().to_string()
+    file.read_to_string(&mut content).unwrap();
+    content
 }
 
 #[cfg(test)]
