@@ -74,7 +74,8 @@ mod parser_tests {
         "#
         .to_string();
 
-        let deserialized_transaction = deserialize_single_transaction(transaction_to_deserialize);
+        let deserialized_transaction =
+            deserialize_single_transaction(transaction_to_deserialize).unwrap();
 
         let expected_deserialization_result = Transaction {
             transaction_type: "CREATE".to_string(),
