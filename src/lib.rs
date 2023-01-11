@@ -18,11 +18,6 @@ struct TransactionDetails {
     data: String,
 }
 
-fn deserialize_single_transaction(transaction_to_deserialize: String) -> Transaction {
-    let transaction: Transaction = serde_json::from_str(&transaction_to_deserialize).unwrap();
-    transaction
-}
-
 pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
     let mut file =
         File::open(path_to_file).map_err(|err| format!("Error while opening the file: {}", err))?;
@@ -31,6 +26,11 @@ pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
     file.read_to_string(&mut content)
         .map_err(|err| format!("Error while reading to string: {}", err))?;
     Ok(content)
+}
+
+fn deserialize_single_transaction(transaction_to_deserialize: String) -> Transaction {
+    let transaction: Transaction = serde_json::from_str(&transaction_to_deserialize).unwrap();
+    transaction
 }
 
 #[cfg(test)]
