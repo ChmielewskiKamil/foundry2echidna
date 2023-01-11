@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use serde_json::from_str;
 use std::{fs::File, io::Read};
 
