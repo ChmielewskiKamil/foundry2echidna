@@ -22,9 +22,6 @@ struct TransactionDetails {
 #[derive(Deserialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 struct Receipt {
-    from: String,
-    to: Option<String>,
-    contract_address: String,
     gas_used: String,
     effective_gas_price: String,
 }
@@ -134,9 +131,6 @@ mod parser_tests {
             deserialize_single_receipt(receipt_to_deserialize).unwrap();
 
         let expected_deserialization_result = Receipt {
-            from: "0x90F79bf6EB2c4f870365E785982E1f101E93b906".to_string(),
-            to: None,
-            contract_address: "0x057ef64E23666F000b34aE31332854aCBd1c8544".to_string(),
             gas_used: "0x6e675".to_string(),
             effective_gas_price: "0xe0fed783".to_string(),
         };
