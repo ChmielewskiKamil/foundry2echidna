@@ -129,7 +129,8 @@ mod parser_tests {
         "#
         .to_string();
 
-        let deserialized_receipt: Receipt = deserialize_single_receipt(receipt_to_deserialize);
+        let deserialized_receipt: Receipt =
+            deserialize_single_receipt(receipt_to_deserialize).unwrap();
 
         let expected_deserialization_result = Receipt {
             from: "0x90F79bf6EB2c4f870365E785982E1f101E93b906".to_string(),
