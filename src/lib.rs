@@ -1,13 +1,16 @@
+use serde::{Deserialize, Serialize};
+use serde_json::from_str;
 use std::{fs::File, io::Read};
 
-#[derive(Debug, PartialEq)]
+#[derive(Deserialize, Debug, PartialEq)]
+#[serde(rename_all = "camelCase")]
 struct Transaction {
     transaction_type: String,
     contract_address: String,
     transaction: TransactionDetails,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Deserialize, Debug, PartialEq)]
 struct TransactionDetails {
     from: String,
     gas: String,
@@ -16,7 +19,8 @@ struct TransactionDetails {
 }
 
 fn deserialize_single_transaction(transaction_to_deserialize: String) -> Transaction {
-    todo!();
+    let transaction: Transaction = serde_json::from_str(&transaction_to_deserialize).unwrap();
+    transaction
 }
 
 pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
