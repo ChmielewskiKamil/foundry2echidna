@@ -2,8 +2,8 @@ use std::{fs::File, io::Read};
 
 #[derive(Debug, PartialEq)]
 struct Transaction {
-    transaction_type: String,
-    contract_address: String,
+    transactionType: String,
+    contractAddress: String,
     transaction: TransactionDetails,
 }
 
@@ -35,22 +35,20 @@ mod parser_tests {
 
     #[test]
     fn it_should_read_file_content_to_string() {
-        let expected_content = r#"
+        let expected_content = r#"{
+    "transactions": [
         {
-            "transactions": [
-                {
-                    "transactionType": "CREATE",
-                    "contractAddress": "0x057ef64E23666F000b34aE31332854aCBd1c8544",
-                    "transaction": {
-                        "from": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
-                        "gas": "0x8f864",
-                        "value": "0x0",
-                        "data": "0x6080604"
-                    }
-                }
-            ]
+            "transactionType": "CREATE",
+            "contractAddress": "0x057ef64E23666F000b34aE31332854aCBd1c8544",
+            "transaction": {
+                "from": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+                "gas": "0x8f864",
+                "value": "0x0",
+                "data": "0x6080604"
+            }
         }
-"#;
+    ]
+}"#;
 
         let actual_content = read_broadcast_file("test_json_files/simple_broadcast_test.json");
         assert_eq!(expected_content, actual_content.unwrap());
@@ -75,8 +73,8 @@ mod parser_tests {
         let deserialized_transaction = deserialize_single_transaction(transaction_to_deserialize);
 
         let expected_deserialization_result = Transaction {
-            transaction_type: "CREATE".to_string(),
-            contract_address: "0x057ef64E23666F000b34aE31332854aCBd1c8544".to_string(),
+            transactionType: "CREATE".to_string(),
+            contractAddress: "0x057ef64E23666F000b34aE31332854aCBd1c8544".to_string(),
             transaction: TransactionDetails {
                 from: "0x90f79bf6eb2c4f870365e785982e1f101e93b906".to_string(),
                 gas: "0x8f864".to_string(),
