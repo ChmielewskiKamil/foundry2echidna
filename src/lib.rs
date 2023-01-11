@@ -14,6 +14,7 @@ struct Transaction {
 #[derive(Deserialize, Debug, PartialEq)]
 struct TransactionDetails {
     from: String,
+    to: Option<String>,
     gas: String,
     value: String,
     data: String,
@@ -78,7 +79,7 @@ mod parser_tests {
     }
 
     #[test]
-    fn it_should_properly_deserialize_single_transaction() {
+    fn it_should_deserialize_single_transaction() {
         let transaction_to_deserialize = r#"
         {
             "transactionType": "CREATE",
@@ -111,7 +112,7 @@ mod parser_tests {
     }
 
     #[test]
-    fn it_should_properly_deserialize_single_receipt() {
+    fn it_should_deserialize_single_receipt() {
         let receipt_to_deserialize = r#"
         {
             "transactionHash": "0xd532ff21e93eac89c2bbd5f4813ac0d9274e479b6eb09b2b2f45b82489faba1b",
