@@ -34,9 +34,9 @@ There are multiple ways of accessing specific fields. Here are some examples tha
 | Etheno field | Foundry field |
 | --- | --- |
 | `event` | `transactions[i].transaction_type` |
-| `from` | `receipts[i].from` |
-| `to` | `receipts[i].to` |
-| `contract_address` | `receipts[i].contract_address` | 
+| `from` | ~~`receipts[i].from`~~ `transactions[i].transaction.from`|
+| `to` | ~~`receipts[i].to`~~ `transactions[i].transaction.to` |
+| `contract_address` | ~~`receipts[i].contract_address`~~ `transactions[i].contract_address`| 
 | `gas_used` | `receipts[i].gas_used` |
 | `gas_price` | `receipts[i].effective_gas_price` |
 | `data` | `transactions[i].transaction.data` |
