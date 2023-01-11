@@ -101,6 +101,7 @@ mod parser_tests {
             contract_address: "0x057ef64E23666F000b34aE31332854aCBd1c8544".to_string(),
             transaction: TransactionDetails {
                 from: "0x90f79bf6eb2c4f870365e785982e1f101e93b906".to_string(),
+                to: None,
                 gas: "0x8f864".to_string(),
                 value: "0x0".to_string(),
                 data: "0x6080604".to_string(),
