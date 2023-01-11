@@ -30,8 +30,9 @@ pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
 
 fn deserialize_single_transaction(
     transaction_to_deserialize: String,
-) -> Result<Transaction, serde_json::Error> {
-    let transaction: Transaction = serde_json::from_str(&transaction_to_deserialize).unwrap();
+) -> Result<Transaction, String> {
+    let transaction: Transaction = serde_json::from_str(&transaction_to_deserialize)
+        .map_err(|err| format!("Failed to deserialize transaction: {}", err))?;
     Ok(transaction)
 }
 
