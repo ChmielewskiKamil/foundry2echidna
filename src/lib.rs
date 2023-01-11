@@ -19,6 +19,7 @@ struct TransactionDetails {
 }
 
 #[derive(Deserialize, Debug, PartialEq)]
+#[serde(rename_all = "camelCase")]
 struct Receipt {
     from: String,
     to: Option<String>,
@@ -46,7 +47,8 @@ fn deserialize_single_transaction(
 }
 
 fn deserialize_single_receipt(receipt_to_deserialize: String) -> Receipt {
-    todo!()
+    let receipt: Receipt = serde_json::from_str(&receipt_to_deserialize).unwrap();
+    receipt
 }
 
 #[cfg(test)]
@@ -120,7 +122,7 @@ mod parser_tests {
             "gasUsed": "0x6e675",
             "contractAddress": "0x057ef64E23666F000b34aE31332854aCBd1c8544",
             "effectiveGasPrice": "0xe0fed783"
-        },
+        }
         "#
         .to_string();
 
