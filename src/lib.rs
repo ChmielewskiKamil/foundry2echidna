@@ -1,11 +1,13 @@
 use std::{fs::File, io::Read};
 
-pub fn read_broadcast_file(path_to_file: &str) -> String {
-    let mut file = File::open(path_to_file).unwrap();
+pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
+    let mut file =
+        File::open(path_to_file).map_err(|err| format!("Error while opening the file: {}", err))?;
 
     let mut content = String::new();
-    file.read_to_string(&mut content).unwrap();
-    content
+    file.read_to_string(&mut content)
+        .map_err(|err| format!("Error while reading to string: {}", err))?;
+    Ok(content)
 }
 
 #[cfg(test)]
