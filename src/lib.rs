@@ -14,9 +14,7 @@ mod parser_tests {
 
     #[test]
     fn it_should_read_file_content_to_string() {
-        assert_eq!(
-            read_broadcast_file("test_json_files/simple_broadcast_test.json"),
-            Ok(r#"{
+        let expected_content = r#"{
     "transactions": [
         {
             "transactionType": "CREATE",
@@ -29,7 +27,9 @@ mod parser_tests {
             }
         }
     ]
-}"#)
-        )
+}"#;
+
+        let actual_content = read_broadcast_file("test_json_files/simple_broadcast_test.json");
+        assert_eq!(expected_content, actual_content.unwrap());
     }
 }
