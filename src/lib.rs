@@ -53,6 +53,10 @@ fn deserialize_single_receipt(receipt_to_deserialize: String) -> Result<Receipt,
     Ok(receipt)
 }
 
+fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> String {
+    todo!()
+}
+
 #[cfg(test)]
 mod parser_tests {
     use super::*;
@@ -141,5 +145,39 @@ mod parser_tests {
     }
 
     #[test]
-    fn it_should_serialize_single_contract_creation_event() {}
+    fn it_should_serialize_single_contract_creation_event() {
+        let transaction_to_serialize = Transaction {
+            transaction_type: "CREATE".to_string(),
+            contract_address: "0x057ef64E23666F000b34aE31332854aCBd1c8544".to_string(),
+            transaction: TransactionDetails {
+                from: "0x90f79bf6eb2c4f870365e785982e1f101e93b906".to_string(),
+                to: None,
+                gas: "0x8f864".to_string(),
+                value: "0x0".to_string(),
+                data: "0x6080604".to_string(),
+            },
+        };
+
+        let receipt_to_serialize = Receipt {
+            gas_used: "0x6e675".to_string(),
+            effective_gas_price: "0xe0fed783".to_string(),
+        };
+
+        let expected_serialization_result = r#"
+        {
+            "event": "ContractCreated",
+            "from": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+            "contract_address": "0x057ef64E23666F000b34aE31332854aCBd1c8544",
+            "gas_used": "0x8f864",
+            "gas_price": "0x4a817c800",
+            "data": "0x6080604",
+            "value": "0x0"
+        }
+        "#;
+
+        let serialization_result =
+            serialize_transaction(transaction_to_serialize, receipt_to_serialize);
+
+        assert_eq!(expected_serialization_result, serialization_result);
+    }
 }
