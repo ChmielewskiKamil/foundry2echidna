@@ -1,9 +1,9 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use serde_json::from_str;
 use std::{fs::File, io::Read};
 
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Serialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 struct Transaction {
     transaction_type: String,
@@ -11,7 +11,7 @@ struct Transaction {
     transaction: TransactionDetails,
 }
 
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Serialize, Debug, PartialEq)]
 struct TransactionDetails {
     from: String,
     to: Option<String>,
@@ -20,7 +20,7 @@ struct TransactionDetails {
     data: String,
 }
 
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Serialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 struct Receipt {
     gas_used: String,
