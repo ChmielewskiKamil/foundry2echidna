@@ -139,4 +139,7 @@ mod parser_tests {
 
         assert_eq!(deserialized_receipt, expected_deserialization_result);
     }
+
+    #[test]
+    fn it_should_serialize_single_contract_creation_event() {}
 }
