@@ -27,6 +27,12 @@ struct Receipt {
     effective_gas_price: String,
 }
 
+#[derive(Serialize, Debug, PartialEq)]
+struct ContractCreationEvent {
+    transaction_fields: Transaction,
+    receipt_fields: Receipt,
+}
+
 pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
     let mut file =
         File::open(path_to_file).map_err(|err| format!("Error while opening the file: {}", err))?;
@@ -54,7 +60,15 @@ fn deserialize_single_receipt(receipt_to_deserialize: String) -> Result<Receipt,
 }
 
 fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> String {
-    todo!()
+    let mut serialized_transaction = String::new();
+    let creation_event: ContractCreationEvent = ContractCreationEvent {
+        transaction_fields: transaction,
+        receipt_fields: receipt,
+    };
+
+    serialized_transaction.push_str(&serde_json::to_string(&creation_event).unwrap().to_string());
+
+    serialized_transaction
 }
 
 #[cfg(test)]
