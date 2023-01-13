@@ -6,6 +6,7 @@ use std::{fs::File, io::Read};
 #[derive(Deserialize, Serialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 struct Transaction {
+    #[serde(rename(serialize = "event"))]
     transaction_type: String,
     contract_address: String,
     transaction: TransactionDetails,
@@ -24,6 +25,7 @@ struct TransactionDetails {
 #[serde(rename_all = "camelCase")]
 struct Receipt {
     gas_used: String,
+    #[serde(rename(serialize = "gas_price"))]
     effective_gas_price: String,
 }
 
