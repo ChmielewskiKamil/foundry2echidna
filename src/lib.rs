@@ -99,7 +99,10 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<S
             let function_call_event: FunctionCallEvent = FunctionCallEvent {
                 event: "FunctionCall".to_string(),
                 from: transaction.transaction.from,
-                to: transaction.transaction.to.unwrap(),
+                to: transaction
+                    .transaction
+                    .to
+                    .ok_or("The 'to' field is empty!")?,
                 gas_used: receipt.gas_used,
                 gas_price: receipt.effective_gas_price,
                 data: transaction.transaction.data,
