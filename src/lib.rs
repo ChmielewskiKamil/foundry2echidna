@@ -62,14 +62,14 @@ pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
 
 #[allow(dead_code)]
 fn deserialize_single_transaction(transaction_to_deserialize: &str) -> Result<Transaction, String> {
-    let transaction: Transaction = serde_json::from_str(&transaction_to_deserialize)
+    let transaction: Transaction = serde_json::from_str(transaction_to_deserialize)
         .map_err(|err| format!("Failed to deserialize transaction: {}", err))?;
     Ok(transaction)
 }
 
 #[allow(dead_code)]
 fn deserialize_single_receipt(receipt_to_deserialize: &str) -> Result<Receipt, String> {
-    let receipt: Receipt = serde_json::from_str(&receipt_to_deserialize)
+    let receipt: Receipt = serde_json::from_str(receipt_to_deserialize)
         .map_err(|err| format!("Failed to deserialize receipt: {}", err))?;
     Ok(receipt)
 }
