@@ -3,6 +3,12 @@ use serde::{Deserialize, Serialize};
 use serde_json::from_str;
 use std::{fs::File, io::Read};
 
+#[derive(Serialize)]
+enum Event {
+    ContractCreated(ContractCreationEvent),
+    FunctionCall(FunctionCallEvent),
+}
+
 #[derive(Deserialize, Serialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 struct Transaction {
@@ -33,6 +39,17 @@ struct ContractCreationEvent {
     event: String,
     from: String,
     contract_address: String,
+    gas_used: String,
+    gas_price: String,
+    data: String,
+    value: String,
+}
+
+#[derive(Serialize, Debug, PartialEq)]
+struct FunctionCallEvent {
+    event: String,
+    from: String,
+    to: String,
     gas_used: String,
     gas_price: String,
     data: String,
