@@ -65,6 +65,7 @@ fn deserialize_single_receipt(receipt_to_deserialize: String) -> Result<Receipt,
     Ok(receipt)
 }
 
+#[allow(dead_code)]
 fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> String {
     let mut serialized_transaction = String::new();
     let creation_event: ContractCreationEvent = ContractCreationEvent {
@@ -77,7 +78,7 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> String {
         value: transaction.transaction.value,
     };
 
-    serialized_transaction.push_str(&serde_json::to_string(&creation_event).unwrap().to_string());
+    serialized_transaction.push_str(&serde_json::to_string(&creation_event).unwrap());
 
     serialized_transaction
 }
