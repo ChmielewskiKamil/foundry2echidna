@@ -3,12 +3,6 @@ use serde::{Deserialize, Serialize};
 use serde_json::from_str;
 use std::{fs::File, io::Read};
 
-#[derive(Serialize)]
-enum Event {
-    ContractCreated(ContractCreationEvent),
-    FunctionCall(FunctionCallEvent),
-}
-
 #[derive(Deserialize, Serialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 struct Transaction {
@@ -85,17 +79,21 @@ fn deserialize_single_receipt(receipt_to_deserialize: String) -> Result<Receipt,
 #[allow(dead_code)]
 fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> String {
     let mut serialized_transaction = String::new();
-    let creation_event: ContractCreationEvent = ContractCreationEvent {
-        event: "ContractCreated".to_string(),
-        from: transaction.transaction.from,
-        contract_address: transaction.contract_address,
-        gas_used: receipt.gas_used,
-        gas_price: receipt.effective_gas_price,
-        data: transaction.transaction.data,
-        value: transaction.transaction.value,
-    };
-
-    serialized_transaction.push_str(&serde_json::to_string(&creation_event).unwrap());
+    match transaction.transaction_type.as_ref() {
+        "CREATE" => {
+            let contract_creation_event: ContractCreationEvent = ContractCreationEvent {
+                event: "ContractCreated".to_string(),
+                from: transaction.transaction.from,
+                contract_address: transaction.contract_address,
+                gas_used: receipt.gas_used,
+                gas_price: receipt.effective_gas_price,
+                data: transaction.transaction.data,
+                value: transaction.transaction.value,
+            };
+        }
+        "CALL" => todo!(),
+        _ => {}
+    }
 
     serialized_transaction
 }
