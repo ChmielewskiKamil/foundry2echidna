@@ -92,7 +92,18 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> String {
             };
             serialized_transaction.push_str(&serde_json::to_string(&creation_event).unwrap());
         }
-        "CALL" => todo!(),
+        "CALL" => {
+            let function_call_event: FunctionCallEvent = FunctionCallEvent {
+                event: "FunctionCall".to_string(),
+                from: transaction.transaction.from,
+                to: transaction.transaction.to.unwrap(),
+                gas_used: receipt.gas_used,
+                gas_price: receipt.effective_gas_price,
+                data: transaction.transaction.data,
+                value: transaction.transaction.value,
+            };
+            serialized_transaction.push_str(&serde_json::to_string(&function_call_event).unwrap());
+        }
         _ => {}
     }
 
