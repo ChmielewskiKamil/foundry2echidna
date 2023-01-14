@@ -77,7 +77,7 @@ fn deserialize_single_receipt(receipt_to_deserialize: String) -> Result<Receipt,
 }
 
 #[allow(dead_code)]
-fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> String {
+fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<String, String> {
     let mut serialized_transaction = String::new();
     match transaction.transaction_type.as_ref() {
         "CREATE" => {
@@ -107,7 +107,7 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> String {
         _ => {}
     }
 
-    serialized_transaction
+    Ok(serialized_transaction)
 }
 
 #[cfg(test)]
