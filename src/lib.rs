@@ -30,8 +30,13 @@ struct Receipt {
 
 #[derive(Serialize, Debug, PartialEq)]
 struct ContractCreationEvent {
-    transaction_fields: Transaction,
-    receipt_fields: Receipt,
+    event: String,
+    from: String,
+    contract_address: String,
+    gas_used: String,
+    gas_price: String,
+    data: String,
+    value: String,
 }
 
 pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
@@ -63,8 +68,13 @@ fn deserialize_single_receipt(receipt_to_deserialize: String) -> Result<Receipt,
 fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> String {
     let mut serialized_transaction = String::new();
     let creation_event: ContractCreationEvent = ContractCreationEvent {
-        transaction_fields: transaction,
-        receipt_fields: receipt,
+        event: "ContractCreated".to_string(),
+        from: transaction.transaction.from,
+        contract_address: transaction.contract_address,
+        gas_used: receipt.gas_used,
+        gas_price: receipt.effective_gas_price,
+        data: transaction.transaction.data,
+        value: transaction.transaction.value,
     };
 
     serialized_transaction.push_str(&serde_json::to_string(&creation_event).unwrap().to_string());
