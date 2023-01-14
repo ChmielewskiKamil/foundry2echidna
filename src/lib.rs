@@ -81,7 +81,7 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> String {
     let mut serialized_transaction = String::new();
     match transaction.transaction_type.as_ref() {
         "CREATE" => {
-            let contract_creation_event: ContractCreationEvent = ContractCreationEvent {
+            let creation_event: ContractCreationEvent = ContractCreationEvent {
                 event: "ContractCreated".to_string(),
                 from: transaction.transaction.from,
                 contract_address: transaction.contract_address,
@@ -90,6 +90,7 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> String {
                 data: transaction.transaction.data,
                 value: transaction.transaction.value,
             };
+            serialized_transaction.push_str(&serde_json::to_string(&creation_event).unwrap());
         }
         "CALL" => todo!(),
         _ => {}
