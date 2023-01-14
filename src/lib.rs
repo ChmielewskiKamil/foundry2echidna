@@ -105,7 +105,10 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<S
                 data: transaction.transaction.data,
                 value: transaction.transaction.value,
             };
-            serialized_transaction.push_str(&serde_json::to_string(&function_call_event).unwrap());
+            serialized_transaction.push_str(
+                &serde_json::to_string(&function_call_event)
+                    .map_err(|err| format!("Failed to serialize function call event: {}", err))?,
+            );
         }
         _ => {}
     }
