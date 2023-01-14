@@ -194,4 +194,30 @@ mod parser_tests {
 
         assert_eq!(expected_serialization_result, serialization_result);
     }
+
+    #[test]
+    fn it_should_serialize_single_function_call_event() {
+        let transaction_to_serialize = Transaction {
+            transaction_type: "CALL".to_string(),
+            contract_address: "0x057ef64E23666F000b34aE31332854aCBd1c8544".to_string(),
+            transaction: TransactionDetails {
+                from: "0x90f79bf6eb2c4f870365e785982e1f101e93b906".to_string(),
+                to: Some("0x057ef64e23666f000b34ae31332854acbd1c8544".to_string()),
+                value: "0x0".to_string(),
+                data: "0x202023".to_string(),
+            },
+        };
+
+        let receipt_to_serialize = Receipt {
+            gas_used: "0xb3bd".to_string(),
+            effective_gas_price: "0xe0fed783".to_string(),
+        };
+
+        let expected_serialization_result = r#"{"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544",contract_address":"0x057ef64E23666F000b34aE31332854aCBd1c8544","gas_used":"0x6e675","gas_price":"0xe0fed783","data":"0x6080604","value":"0x0"}"#;
+
+        let serialization_result =
+            serialize_transaction(transaction_to_serialize, receipt_to_serialize);
+
+        assert_eq!(expected_serialization_result, serialization_result);
+    }
 }
