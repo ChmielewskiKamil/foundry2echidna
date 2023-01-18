@@ -52,25 +52,25 @@ struct FunctionCallEvent {
 
 pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
     let mut file =
-        File::open(path_to_file).map_err(|err| format!("Error while opening the file: {}", err))?;
+        File::open(path_to_file).map_err(|err| format!("Error while opening the file: {err}"))?;
 
     let mut content = String::new();
     file.read_to_string(&mut content)
-        .map_err(|err| format!("Error while reading to string: {}", err))?;
+        .map_err(|err| format!("Error while reading to string: {err}"))?;
     Ok(content)
 }
 
 #[allow(dead_code)]
 fn deserialize_single_transaction(transaction_to_deserialize: &str) -> Result<Transaction, String> {
     let transaction: Transaction = serde_json::from_str(transaction_to_deserialize)
-        .map_err(|err| format!("Failed to deserialize transaction: {}", err))?;
+        .map_err(|err| format!("Failed to deserialize transaction: {err}"))?;
     Ok(transaction)
 }
 
 #[allow(dead_code)]
 fn deserialize_single_receipt(receipt_to_deserialize: &str) -> Result<Receipt, String> {
     let receipt: Receipt = serde_json::from_str(receipt_to_deserialize)
-        .map_err(|err| format!("Failed to deserialize receipt: {}", err))?;
+        .map_err(|err| format!("Failed to deserialize receipt: {err}"))?;
     Ok(receipt)
 }
 
@@ -90,7 +90,7 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<S
             };
             serialized_transaction.push_str(
                 &serde_json::to_string(&creation_event)
-                    .map_err(|err| format!("Failed to serialize creation event: {}", err))?,
+                    .map_err(|err| format!("Failed to serialize creation event: {err}"))?,
             );
         }
         "CALL" => {
@@ -108,7 +108,7 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<S
             };
             serialized_transaction.push_str(
                 &serde_json::to_string(&function_call_event)
-                    .map_err(|err| format!("Failed to serialize function call event: {}", err))?,
+                    .map_err(|err| format!("Failed to serialize function call event: {err}"))?,
             );
         }
         _ => {}
