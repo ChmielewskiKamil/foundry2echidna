@@ -84,7 +84,6 @@ fn deserialize_single_receipt(receipt_to_deserialize: &str) -> Result<Receipt, S
     Ok(receipt)
 }
 
-#[allow(dead_code)]
 fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<String, String> {
     let mut serialized_transaction = String::new();
     match transaction.transaction_type.as_ref() {
@@ -130,8 +129,16 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<S
 fn serialize_tx_and_receipt_arrays(
     tx_array: BroadcastedTransactions,
     receipts_array: BroadcastedReceipts,
-) -> String {
-    r#"{"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0xb3bd","gas_price":"0xe0fed783","data":"0x202023","value":"0x0"}"#.to_string()
+) -> Result<Vec<String>, String> {
+    let mut serialized_tx_and_receipts = vec![];
+    for (tx, receipt) in tx_array
+        .transactions
+        .into_iter()
+        .zip(receipts_array.receipts.into_iter())
+    {
+        serialized_tx_and_receipts.push(serialize_transaction(tx, receipt)?);
+    }
+    Ok(serialized_tx_and_receipts)
 }
 
 #[cfg(test)]
@@ -296,11 +303,13 @@ mod parser_tests {
             receipts: vec![receipt1],
         };
 
-        let expected_serialization_result = r#"{"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0xb3bd","gas_price":"0xe0fed783","data":"0x202023","value":"0x0"}"#;
+        let expected_serialization_result = vec![
+            r#"{"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0xb3bd","gas_price":"0xe0fed783","data":"0x202023","value":"0x0"}"#,
+        ];
 
         let serialization_result =
             serialize_tx_and_receipt_arrays(tx_array_to_serialize, receipts_array_to_serialize);
 
-        assert_eq!(expected_serialization_result, serialization_result);
+        assert_eq!(expected_serialization_result, serialization_result.unwrap());
     }
 }
