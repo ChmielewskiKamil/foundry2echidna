@@ -4,6 +4,16 @@ use serde_json::from_str;
 use std::{fs::File, io::Read};
 
 #[derive(Deserialize, Serialize, Debug, PartialEq)]
+struct BroadcastedTransactions {
+    transactions: Vec<Transaction>,
+}
+
+#[derive(Deserialize, Serialize, Debug, PartialEq)]
+struct BroadcastedReceipts {
+    receipts: Vec<Receipt>,
+}
+
+#[derive(Deserialize, Serialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 struct Transaction {
     #[serde(rename(serialize = "event"))]
@@ -115,6 +125,13 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<S
     }
 
     Ok(serialized_transaction)
+}
+
+fn serialize_tx_and_receipt_arrays(
+    tx_array: BroadcastedTransactions,
+    receipts_array: BroadcastedReceipts,
+) -> String {
+    r#"{"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0xb3bd","gas_price":"0xe0fed783","data":"0x202023","value":"0x0"\n"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0xb3bd","gas_price":"0xe0fed783","data":"0x202023","value":"0x0"}"#.to_string()
 }
 
 #[cfg(test)]
@@ -251,6 +268,38 @@ mod parser_tests {
 
         let serialization_result =
             serialize_transaction(transaction_to_serialize, receipt_to_serialize).unwrap();
+
+        assert_eq!(expected_serialization_result, serialization_result);
+    }
+    #[test]
+    fn it_should_serialize_both_transaction_and_receipt_from_tx_and_receipt_arrays() {
+        let tx1 = Transaction {
+            transaction_type: "CALL".to_string(),
+            contract_address: "0x057ef64E23666F000b34aE31332854aCBd1c8544".to_string(),
+            transaction: TransactionDetails {
+                from: "0x90f79bf6eb2c4f870365e785982e1f101e93b906".to_string(),
+                to: Some("0x057ef64e23666f000b34ae31332854acbd1c8544".to_string()),
+                value: "0x0".to_string(),
+                data: "0x202023".to_string(),
+            },
+        };
+        let receipt1 = Receipt {
+            gas_used: "0xb3bd".to_string(),
+            effective_gas_price: "0xe0fed783".to_string(),
+        };
+
+        let tx_array_to_serialize = BroadcastedTransactions {
+            transactions: vec![tx1],
+        };
+
+        let receipts_array_to_serialize = BroadcastedReceipts {
+            receipts: vec![receipt1],
+        };
+
+        let expected_serialization_result = r#"{"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0xb3bd","gas_price":"0xe0fed783","data":"0x202023","value":"0x0"\n"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0xb3bd","gas_price":"0xe0fed783","data":"0x202023","value":"0x0"}"#;
+
+        let serialization_result =
+            serialize_tx_and_receipt_arrays(tx_array_to_serialize, receipts_array_to_serialize);
 
         assert_eq!(expected_serialization_result, serialization_result);
     }
