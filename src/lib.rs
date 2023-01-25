@@ -62,6 +62,11 @@ struct TransactionsList {
     transactions: Vec<String>,
 }
 
+#[derive(Deserialize, Debug, PartialEq)]
+struct ReceiptsList {
+    receipts: Vec<String>,
+}
+
 /*//////////////////////////////////////////////////////////////
                          FILE HANDLING
 ////////////////////////////////////////////////////////////// */
@@ -325,6 +330,15 @@ mod parser_tests {
             deserialize_multiple_transactions(transactions_to_deserialize).unwrap();
 
         assert_eq!(expected_result, deserialization_result);
+    }
+    #[test]
+    fn it_should_deserialize_a_series_of_receipts() {
+        let receipt1 = r#""#.to_string();
+        let receipt2 = r#""#.to_string();
+
+        let receipts_to_deserialize = ReceiptsList {
+            receipts: vec![receipt1, receipt2],
+        };
     }
     /*//////////////////////////////////////////////////////////////
                             SERIALIZATION TESTS
