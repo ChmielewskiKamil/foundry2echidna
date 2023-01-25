@@ -77,7 +77,7 @@ fn deserialize_single_receipt(receipt_to_deserialize: &str) -> Result<Receipt, S
         .map_err(|err| format!("Failed to deserialize receipt: {err}"))?;
     Ok(receipt)
 }
-
+#[allow(dead_code)]
 fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<String, String> {
     let mut serialized_transaction = String::new();
     match transaction.transaction_type.as_ref() {
@@ -120,6 +120,7 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<S
     Ok(serialized_transaction)
 }
 
+#[allow(dead_code)]
 fn serialize_broadcast(
     tx_array: Vec<Transaction>,
     receipts_array: Vec<Receipt>,
@@ -155,6 +156,9 @@ mod parser_tests {
         let actual_content = read_broadcast_file("test_json_files/simple_broadcast_test.json");
         assert_eq!(expected_content, actual_content.unwrap());
     }
+    /*//////////////////////////////////////////////////////////////
+                        DESERIALIZATION TESTS
+    ////////////////////////////////////////////////////////////// */
 
     #[test]
     fn it_should_deserialize_single_transaction() {
@@ -216,6 +220,12 @@ mod parser_tests {
 
         assert_eq!(deserialized_receipt, expected_deserialization_result);
     }
+    #[test]
+    fn it_should_deserialize_a_series_of_transactions() {}
+
+    /*//////////////////////////////////////////////////////////////
+                            SERIALIZATION TESTS
+    ////////////////////////////////////////////////////////////// */
 
     #[test]
     fn it_should_serialize_single_contract_creation_event() {
@@ -268,6 +278,7 @@ mod parser_tests {
 
         assert_eq!(expected_serialization_result, serialization_result);
     }
+
     #[test]
     fn it_should_serialize_both_transaction_and_receipt_from_tx_and_receipt_arrays() {
         let tx1 = Transaction {
