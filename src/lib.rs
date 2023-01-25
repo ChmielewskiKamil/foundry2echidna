@@ -3,13 +3,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::from_str;
 use std::{fs::File, io::Read};
 
-#[derive(Deserialize, Serialize, Debug, PartialEq)]
-struct Broadcast {
-    transactions: Vec<Transaction>,
-    receipts: Vec<Receipt>,
-}
-
-#[derive(Deserialize, Serialize, Debug, PartialEq)]
+#[derive(Deserialize, Serialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
 struct Transaction {
     #[serde(rename(serialize = "event"))]
@@ -18,7 +12,7 @@ struct Transaction {
     transaction: TransactionDetails,
 }
 
-#[derive(Deserialize, Serialize, Debug, PartialEq)]
+#[derive(Deserialize, Serialize, Debug, PartialEq, Clone)]
 struct TransactionDetails {
     from: String,
     to: Option<String>,
@@ -26,7 +20,7 @@ struct TransactionDetails {
     data: String,
 }
 
-#[derive(Deserialize, Serialize, Debug, PartialEq)]
+#[derive(Deserialize, Serialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
 struct Receipt {
     gas_used: String,
@@ -78,12 +72,6 @@ fn deserialize_single_receipt(receipt_to_deserialize: &str) -> Result<Receipt, S
     let receipt: Receipt = serde_json::from_str(receipt_to_deserialize)
         .map_err(|err| format!("Failed to deserialize receipt: {err}"))?;
     Ok(receipt)
-}
-
-fn deserialize_broadcast(broadcast_json: &str) -> Result<(Vec<Transaction>, Vec<Receipt>), String> {
-    let broadcast: Broadcast = serde_json::from_str(broadcast_json)
-        .map_err(|err| format!("Failed to deserialize JSON: {err}"))?;
-    Ok((broadcast.transactions, broadcast.receipts))
 }
 
 fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<String, String> {
@@ -305,85 +293,5 @@ mod parser_tests {
             serialize_broadcast(tx_array_to_serialize, receipts_array_to_serialize);
 
         assert_eq!(expected_serialization_result, serialization_result.unwrap());
-    }
-    #[test]
-    fn it_should_deserialize_transactions_and_receipts_from_broadcast() {
-        let broadcast = r#"{
-    "transactions": [
-        {
-            "hash": "0xd532ff21e93eac89c2bbd5f4813ac0d9274e479b6eb09b2b2f45b82489faba1b",
-            "transactionType": "CREATE",
-            "contractName": "Ethernaut",
-            "contractAddress": "0x057ef64E23666F000b34aE31332854aCBd1c8544",
-            "function": null,
-            "arguments": null,
-            "transaction": {
-                "type": "0x02",
-                "from": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
-                "gas": "0x8f864",
-                "value": "0x0",
-                "data": "0x6080604",
-                "nonce": "0x0",
-                "accessList": []
-            },
-            "additionalContracts": []
-        },
-    "receipts": [
-        {
-            "transactionHash": "0xd532ff21e93eac89c2bbd5f4813ac0d9274e479b6eb09b2b2f45b82489faba1b",
-            "transactionIndex": "0x0",
-            "blockHash": "0xec94f9df892826b801574831de293f983ed8f3f81036a99faa616a8da694b2a9",
-            "blockNumber": "0x1",
-            "from": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-            "to": null,
-            "cumulativeGasUsed": "0x6e675",
-            "gasUsed": "0x6e675",
-            "contractAddress": "0x057ef64E23666F000b34aE31332854aCBd1c8544",
-            "logs": [
-                {
-                    "address": "0x057ef64E23666F000b34aE31332854aCBd1c8544",
-                    "topics": [
-                        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
-                        "0x0000000000000000000000000000000000000000000000000000000000000000",
-                        "0x00000000000000000000000090f79bf6eb2c4f870365e785982e1f101e93b906"
-                    ],
-                    "data": "0x",
-                    "blockHash": "0xec94f9df892826b801574831de293f983ed8f3f81036a99faa616a8da694b2a9",
-                    "blockNumber": "0x1",
-                    "transactionHash": "0xd532ff21e93eac89c2bbd5f4813ac0d9274e479b6eb09b2b2f45b82489faba1b",
-                    "transactionIndex": "0x0",
-                    "logIndex": "0x0",
-                    "transactionLogIndex": "0x0",
-                    "removed": false
-                }
-            ],
-            "status": "0x1",
-            "logsBloom": "0x000000",
-            "effectiveGasPrice": "0xe0fed783"
-        }
-   }
-            "#;
-        let deserialized_transaction = Transaction {
-            transaction_type: "CREATE".to_string(),
-            contract_address: "0x057ef64E23666F000b34aE31332854aCBd1c8544".to_string(),
-            transaction: TransactionDetails {
-                from: "0x90f79bf6eb2c4f870365e785982e1f101e93b906".to_string(),
-                to: None,
-                value: "0x0".to_string(),
-                data: "0x6080604".to_string(),
-            },
-        };
-        let deserialized_receipt = Receipt {
-            gas_used: "0x6e675".to_string(),
-            effective_gas_price: "0xe0fed783".to_string(),
-        };
-        let expected_transaction_list = vec![deserialized_transaction];
-        let expected_receipts_list = vec![deserialized_receipt];
-
-        let deserialization_result = deserialize_broadcast(broadcast);
-        assert_eq!(
-            (expected_transaction_list, expected_receipts_list),
-            deserialization_result.unwrap()
-        );
     }
 }
