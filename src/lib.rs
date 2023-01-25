@@ -3,6 +3,10 @@ use serde::{Deserialize, Serialize};
 use serde_json::from_str;
 use std::{fs::File, io::Read};
 
+/*//////////////////////////////////////////////////////////////
+                        DATA MODEL STRUCTS
+////////////////////////////////////////////////////////////// */
+
 #[derive(Deserialize, Serialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
 struct Transaction {
