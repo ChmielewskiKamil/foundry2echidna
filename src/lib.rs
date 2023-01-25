@@ -54,6 +54,17 @@ struct FunctionCallEvent {
     value: String,
 }
 
+/*//////////////////////////////////////////////////////////////
+                    PARSING HELPER STRUCTS
+////////////////////////////////////////////////////////////// */
+#[derive(Deserialize, Debug, PartialEq)]
+struct TransactionsList<'a> {
+    transactions: Vec<&'a str>,
+}
+
+/*//////////////////////////////////////////////////////////////
+                         FILE HANDLING
+////////////////////////////////////////////////////////////// */
 pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
     let mut file =
         File::open(path_to_file).map_err(|err| format!("Error while opening the file: {err}"))?;
@@ -64,6 +75,9 @@ pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
     Ok(content)
 }
 
+/*//////////////////////////////////////////////////////////////
+                    DESERIALIZATION FUNCTIONS
+////////////////////////////////////////////////////////////// */
 #[allow(dead_code)]
 fn deserialize_single_transaction(transaction_to_deserialize: &str) -> Result<Transaction, String> {
     let transaction: Transaction = serde_json::from_str(transaction_to_deserialize)
@@ -77,6 +91,14 @@ fn deserialize_single_receipt(receipt_to_deserialize: &str) -> Result<Receipt, S
         .map_err(|err| format!("Failed to deserialize receipt: {err}"))?;
     Ok(receipt)
 }
+
+fn deserialize_multiple_transactions(
+    transactions_to_deserialize: TransactionsList,
+) -> Result<Vec<Transaction>, String> {
+}
+/*//////////////////////////////////////////////////////////////
+                   SERIALIZATION FUNCTIONS
+////////////////////////////////////////////////////////////// */
 #[allow(dead_code)]
 fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<String, String> {
     let mut serialized_transaction = String::new();
@@ -132,6 +154,9 @@ fn serialize_broadcast(
     Ok(serialized_tx_and_receipts)
 }
 
+/*//////////////////////////////////////////////////////////////
+                        UNIT TESTS
+////////////////////////////////////////////////////////////// */
 #[cfg(test)]
 mod parser_tests {
     use super::*;
@@ -222,9 +247,7 @@ mod parser_tests {
     }
     #[test]
     fn it_should_deserialize_a_series_of_transactions() {
-        let transactions_to_deserialize = r#"{
-    "transactions": [
-        {
+        let tx1 = r#"{
             "hash": "0xd532ff21e93eac89c2bbd5f4813ac0d9274e479b6eb09b2b2f45b82489faba1b",
             "transactionType": "CREATE",
             "contractName": "Ethernaut",
@@ -241,8 +264,8 @@ mod parser_tests {
                 "accessList": []
             },
             "additionalContracts": []
-        },
-        {
+        }"#;
+        let tx2 = r#"{
             "hash": "0x5370406a7d060079764126708230356640e3494965321ab622842123ebb71052",
             "transactionType": "CREATE",
             "contractName": "PrivacyFactory",
@@ -259,8 +282,10 @@ mod parser_tests {
                 "accessList": []
             },
             "additionalContracts": []
-        }
-    ]}"#;
+        }"#;
+        let transactions_to_deserialize = TransactionsList {
+            transactions: vec![tx1, tx2],
+        };
 
         let deserialized_tx1 = Transaction {
             transaction_type: "CREATE".to_string(),
@@ -285,10 +310,11 @@ mod parser_tests {
 
         let expected_result = vec![deserialized_tx1, deserialized_tx2];
 
-        let deserialization_result = deserialize_multiple_transactions(transactions_to_deserialize).unwrap();
+        let deserialization_result =
+            deserialize_multiple_transactions(transactions_to_deserialize).unwrap();
 
         assert_eq!(expected_result, deserialization_result);
-
+    }
     /*//////////////////////////////////////////////////////////////
                             SERIALIZATION TESTS
     ////////////////////////////////////////////////////////////// */
