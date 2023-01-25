@@ -221,7 +221,73 @@ mod parser_tests {
         assert_eq!(deserialized_receipt, expected_deserialization_result);
     }
     #[test]
-    fn it_should_deserialize_a_series_of_transactions() {}
+    fn it_should_deserialize_a_series_of_transactions() {
+        let transactions_to_deserialize = r#"{
+    "transactions": [
+        {
+            "hash": "0xd532ff21e93eac89c2bbd5f4813ac0d9274e479b6eb09b2b2f45b82489faba1b",
+            "transactionType": "CREATE",
+            "contractName": "Ethernaut",
+            "contractAddress": "0x057ef64E23666F000b34aE31332854aCBd1c8544",
+            "function": null,
+            "arguments": null,
+            "transaction": {
+                "type": "0x02",
+                "from": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+                "gas": "0x8f864",
+                "value": "0x0",
+                "data": "0x6080604",
+                "nonce": "0x0",
+                "accessList": []
+            },
+            "additionalContracts": []
+        },
+        {
+            "hash": "0x5370406a7d060079764126708230356640e3494965321ab622842123ebb71052",
+            "transactionType": "CREATE",
+            "contractName": "PrivacyFactory",
+            "contractAddress": "0x261D8c5e9742e6f7f1076Fa1F560894524e19cad",
+            "function": null,
+            "arguments": null,
+            "transaction": {
+                "type": "0x02",
+                "from": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+                "gas": "0x936a5",
+                "value": "0x0",
+                "data": "0x608060405",
+                "nonce": "0x1",
+                "accessList": []
+            },
+            "additionalContracts": []
+        }
+    ]}"#;
+
+        let deserialized_tx1 = Transaction {
+            transaction_type: "CREATE".to_string(),
+            contract_address: "0x057ef64E23666F000b34aE31332854aCBd1c8544".to_string(),
+            transaction: TransactionDetails {
+                from: "0x90f79bf6eb2c4f870365e785982e1f101e93b906".to_string(),
+                to: None,
+                value: "0x0".to_string(),
+                data: "0x6080604".to_string(),
+            },
+        };
+        let deserialized_tx2 = Transaction {
+            transaction_type: "CREATE".to_string(),
+            contract_address: "0x261D8c5e9742e6f7f1076Fa1F560894524e19cad".to_string(),
+            transaction: TransactionDetails {
+                from: "0x90f79bf6eb2c4f870365e785982e1f101e93b906".to_string(),
+                to: None,
+                value: "0x0".to_string(),
+                data: "0x608060405".to_string(),
+            },
+        };
+
+        let expected_result = vec![deserialized_tx1, deserialized_tx2];
+
+        let deserialization_result = deserialize_multiple_transactions(transactions_to_deserialize).unwrap();
+
+        assert_eq!(expected_result, deserialization_result);
 
     /*//////////////////////////////////////////////////////////////
                             SERIALIZATION TESTS
