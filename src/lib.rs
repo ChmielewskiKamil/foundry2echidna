@@ -4,12 +4,8 @@ use serde_json::from_str;
 use std::{fs::File, io::Read};
 
 #[derive(Deserialize, Serialize, Debug, PartialEq)]
-struct BroadcastedTransactions {
+struct Broadcast {
     transactions: Vec<Transaction>,
-}
-
-#[derive(Deserialize, Serialize, Debug, PartialEq)]
-struct BroadcastedReceipts {
     receipts: Vec<Receipt>,
 }
 
@@ -84,6 +80,12 @@ fn deserialize_single_receipt(receipt_to_deserialize: &str) -> Result<Receipt, S
     Ok(receipt)
 }
 
+fn deserialize_broadcast(broadcast_json: &str) -> Result<(Vec<Transaction>, Vec<Receipt>), String> {
+    let broadcast: Broadcast = serde_json::from_str(broadcast_json)
+        .map_err(|err| format!("Failed to deserialize JSON: {err}"))?;
+    Ok((broadcast.transactions, broadcast.receipts))
+}
+
 fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<String, String> {
     let mut serialized_transaction = String::new();
     match transaction.transaction_type.as_ref() {
@@ -126,16 +128,12 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<S
     Ok(serialized_transaction)
 }
 
-fn serialize_tx_and_receipt_arrays(
-    tx_array: BroadcastedTransactions,
-    receipts_array: BroadcastedReceipts,
+fn serialize_broadcast(
+    tx_array: Vec<Transaction>,
+    receipts_array: Vec<Receipt>,
 ) -> Result<Vec<String>, String> {
     let mut serialized_tx_and_receipts = vec![];
-    for (tx, receipt) in tx_array
-        .transactions
-        .into_iter()
-        .zip(receipts_array.receipts.into_iter())
-    {
+    for (tx, receipt) in tx_array.into_iter().zip(receipts_array.into_iter()) {
         serialized_tx_and_receipts.push(serialize_transaction(tx, receipt)?);
     }
     Ok(serialized_tx_and_receipts)
@@ -295,21 +293,97 @@ mod parser_tests {
             effective_gas_price: "0xe0fed783".to_string(),
         };
 
-        let tx_array_to_serialize = BroadcastedTransactions {
-            transactions: vec![tx1],
-        };
+        let tx_array_to_serialize = vec![tx1];
 
-        let receipts_array_to_serialize = BroadcastedReceipts {
-            receipts: vec![receipt1],
-        };
+        let receipts_array_to_serialize = vec![receipt1];
 
         let expected_serialization_result = vec![
             r#"{"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0xb3bd","gas_price":"0xe0fed783","data":"0x202023","value":"0x0"}"#,
         ];
 
         let serialization_result =
-            serialize_tx_and_receipt_arrays(tx_array_to_serialize, receipts_array_to_serialize);
+            serialize_broadcast(tx_array_to_serialize, receipts_array_to_serialize);
 
         assert_eq!(expected_serialization_result, serialization_result.unwrap());
+    }
+    #[test]
+    fn it_should_deserialize_transactions_and_receipts_from_broadcast() {
+        let broadcast = r#"{
+    "transactions": [
+        {
+            "hash": "0xd532ff21e93eac89c2bbd5f4813ac0d9274e479b6eb09b2b2f45b82489faba1b",
+            "transactionType": "CREATE",
+            "contractName": "Ethernaut",
+            "contractAddress": "0x057ef64E23666F000b34aE31332854aCBd1c8544",
+            "function": null,
+            "arguments": null,
+            "transaction": {
+                "type": "0x02",
+                "from": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+                "gas": "0x8f864",
+                "value": "0x0",
+                "data": "0x6080604",
+                "nonce": "0x0",
+                "accessList": []
+            },
+            "additionalContracts": []
+        },
+    "receipts": [
+        {
+            "transactionHash": "0xd532ff21e93eac89c2bbd5f4813ac0d9274e479b6eb09b2b2f45b82489faba1b",
+            "transactionIndex": "0x0",
+            "blockHash": "0xec94f9df892826b801574831de293f983ed8f3f81036a99faa616a8da694b2a9",
+            "blockNumber": "0x1",
+            "from": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+            "to": null,
+            "cumulativeGasUsed": "0x6e675",
+            "gasUsed": "0x6e675",
+            "contractAddress": "0x057ef64E23666F000b34aE31332854aCBd1c8544",
+            "logs": [
+                {
+                    "address": "0x057ef64E23666F000b34aE31332854aCBd1c8544",
+                    "topics": [
+                        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+                        "0x0000000000000000000000000000000000000000000000000000000000000000",
+                        "0x00000000000000000000000090f79bf6eb2c4f870365e785982e1f101e93b906"
+                    ],
+                    "data": "0x",
+                    "blockHash": "0xec94f9df892826b801574831de293f983ed8f3f81036a99faa616a8da694b2a9",
+                    "blockNumber": "0x1",
+                    "transactionHash": "0xd532ff21e93eac89c2bbd5f4813ac0d9274e479b6eb09b2b2f45b82489faba1b",
+                    "transactionIndex": "0x0",
+                    "logIndex": "0x0",
+                    "transactionLogIndex": "0x0",
+                    "removed": false
+                }
+            ],
+            "status": "0x1",
+            "logsBloom": "0x000000",
+            "effectiveGasPrice": "0xe0fed783"
+        }
+   }
+            "#;
+        let deserialized_transaction = Transaction {
+            transaction_type: "CREATE".to_string(),
+            contract_address: "0x057ef64E23666F000b34aE31332854aCBd1c8544".to_string(),
+            transaction: TransactionDetails {
+                from: "0x90f79bf6eb2c4f870365e785982e1f101e93b906".to_string(),
+                to: None,
+                value: "0x0".to_string(),
+                data: "0x6080604".to_string(),
+            },
+        };
+        let deserialized_receipt = Receipt {
+            gas_used: "0x6e675".to_string(),
+            effective_gas_price: "0xe0fed783".to_string(),
+        };
+        let expected_transaction_list = vec![deserialized_transaction];
+        let expected_receipts_list = vec![deserialized_receipt];
+
+        let deserialization_result = deserialize_broadcast(broadcast);
+        assert_eq!(
+            (expected_transaction_list, expected_receipts_list),
+            deserialization_result.unwrap()
+        );
     }
 }
