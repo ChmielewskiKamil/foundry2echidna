@@ -58,8 +58,8 @@ struct FunctionCallEvent {
                     PARSING HELPER STRUCTS
 ////////////////////////////////////////////////////////////// */
 #[derive(Deserialize, Debug, PartialEq)]
-struct TransactionsList<'a> {
-    transactions: Vec<&'a str>,
+struct TransactionsList {
+    transactions: Vec<String>,
 }
 
 /*//////////////////////////////////////////////////////////////
@@ -78,7 +78,6 @@ pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
 /*//////////////////////////////////////////////////////////////
                     DESERIALIZATION FUNCTIONS
 ////////////////////////////////////////////////////////////// */
-#[allow(dead_code)]
 fn deserialize_single_transaction(transaction_to_deserialize: &str) -> Result<Transaction, String> {
     let transaction: Transaction = serde_json::from_str(transaction_to_deserialize)
         .map_err(|err| format!("Failed to deserialize transaction: {err}"))?;
@@ -92,10 +91,20 @@ fn deserialize_single_receipt(receipt_to_deserialize: &str) -> Result<Receipt, S
     Ok(receipt)
 }
 
+#[allow(dead_code)]
 fn deserialize_multiple_transactions(
     transactions_to_deserialize: TransactionsList,
 ) -> Result<Vec<Transaction>, String> {
+    let mut transactions = vec![];
+    for transaction in transactions_to_deserialize.transactions.into_iter() {
+        transactions.push(
+            deserialize_single_transaction(&transaction)
+                .map_err(|err| format!("Failed to deserialze an array of transactions: {err}"))?,
+        );
+    }
+    Ok(transactions)
 }
+
 /*//////////////////////////////////////////////////////////////
                    SERIALIZATION FUNCTIONS
 ////////////////////////////////////////////////////////////// */
@@ -264,7 +273,8 @@ mod parser_tests {
                 "accessList": []
             },
             "additionalContracts": []
-        }"#;
+        }"#
+        .to_string();
         let tx2 = r#"{
             "hash": "0x5370406a7d060079764126708230356640e3494965321ab622842123ebb71052",
             "transactionType": "CREATE",
@@ -282,7 +292,8 @@ mod parser_tests {
                 "accessList": []
             },
             "additionalContracts": []
-        }"#;
+        }"#
+        .to_string();
         let transactions_to_deserialize = TransactionsList {
             transactions: vec![tx1, tx2],
         };
