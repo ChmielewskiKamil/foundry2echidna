@@ -110,6 +110,19 @@ fn deserialize_multiple_transactions(
     Ok(transactions)
 }
 
+#[allow(dead_code)]
+fn deserialize_multiple_receipts(
+    receipts_to_deserialize: ReceiptsList,
+) -> Result<Vec<Receipt>, String> {
+    let mut receipts = vec![];
+    for receipt in receipts_to_deserialize.receipts.into_iter() {
+        receipts.push(
+            deserialize_single_receipt(&receipt)
+                .map_err(|err| format!("Failed to deserialize an array of receipts: {err}"))?,
+        );
+    }
+    Ok(receipts)
+}
 /*//////////////////////////////////////////////////////////////
                    SERIALIZATION FUNCTIONS
 ////////////////////////////////////////////////////////////// */
