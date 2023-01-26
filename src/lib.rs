@@ -7,7 +7,7 @@ use std::{fs::File, io::Read};
                         DATA MODEL STRUCTS
 ////////////////////////////////////////////////////////////// */
 
-#[derive(Deserialize, Serialize, Debug, PartialEq, Clone)]
+#[derive(Deserialize, Serialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 struct Transaction {
     #[serde(rename(serialize = "event"))]
@@ -16,7 +16,7 @@ struct Transaction {
     transaction: TransactionDetails,
 }
 
-#[derive(Deserialize, Serialize, Debug, PartialEq, Clone)]
+#[derive(Deserialize, Serialize, Debug, PartialEq)]
 struct TransactionDetails {
     from: String,
     to: Option<String>,
@@ -24,7 +24,7 @@ struct TransactionDetails {
     data: String,
 }
 
-#[derive(Deserialize, Serialize, Debug, PartialEq, Clone)]
+#[derive(Deserialize, Serialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 struct Receipt {
     gas_used: String,
