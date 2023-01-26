@@ -331,14 +331,92 @@ mod parser_tests {
 
         assert_eq!(expected_result, deserialization_result);
     }
+
     #[test]
     fn it_should_deserialize_a_series_of_receipts() {
-        let receipt1 = r#""#.to_string();
-        let receipt2 = r#""#.to_string();
+        let receipt1 = r#"{
+            "transactionHash": "0xd532ff21e93eac89c2bbd5f4813ac0d9274e479b6eb09b2b2f45b82489faba1b",
+            "transactionIndex": "0x0",
+            "blockHash": "0xec94f9df892826b801574831de293f983ed8f3f81036a99faa616a8da694b2a9",
+            "blockNumber": "0x1",
+            "from": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+            "to": null,
+            "cumulativeGasUsed": "0x6e675",
+            "gasUsed": "0x6e675",
+            "contractAddress": "0x057ef64E23666F000b34aE31332854aCBd1c8544",
+            "logs": [
+                {
+                    "address": "0x057ef64E23666F000b34aE31332854aCBd1c8544",
+                    "topics": [
+                        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+                        "0x0000000000000000000000000000000000000000000000000000000000000000",
+                        "0x00000000000000000000000090f79bf6eb2c4f870365e785982e1f101e93b906"
+                    ],
+                    "data": "0x",
+                    "blockHash": "0xec94f9df892826b801574831de293f983ed8f3f81036a99faa616a8da694b2a9",
+                    "blockNumber": "0x1",
+                    "transactionHash": "0xd532ff21e93eac89c2bbd5f4813ac0d9274e479b6eb09b2b2f45b82489faba1b",
+                    "transactionIndex": "0x0",
+                    "logIndex": "0x0",
+                    "transactionLogIndex": "0x0",
+                    "removed": false
+                }
+            ],
+            "status": "0x1",
+            "logsBloom": "0x000000",
+            "effectiveGasPrice": "0xe0fed783"
+        }"#.to_string();
+        let receipt2 = r#"{
+            "transactionHash": "0x5370406a7d060079764126708230356640e3494965321ab622842123ebb71052",
+            "transactionIndex": "0x0",
+            "blockHash": "0x89faf9173c057b0db7693d1fbe9e06618ec69ad634ac5e0e42022f07c1ffc492",
+            "blockNumber": "0x2",
+            "from": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+            "to": null,
+            "cumulativeGasUsed": "0x71658",
+            "gasUsed": "0x71658",
+            "contractAddress": "0x261D8c5e9742e6f7f1076Fa1F560894524e19cad",
+            "logs": [
+                {
+                    "address": "0x261D8c5e9742e6f7f1076Fa1F560894524e19cad",
+                    "topics": [
+                        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+                        "0x0000000000000000000000000000000000000000000000000000000000000000",
+                        "0x00000000000000000000000090f79bf6eb2c4f870365e785982e1f101e93b906"
+                    ],
+                    "data": "0x",
+                    "blockHash": "0x89faf9173c057b0db7693d1fbe9e06618ec69ad634ac5e0e42022f07c1ffc492",
+                    "blockNumber": "0x2",
+                    "transactionHash": "0x5370406a7d060079764126708230356640e3494965321ab622842123ebb71052",
+                    "transactionIndex": "0x0",
+                    "logIndex": "0x0",
+                    "transactionLogIndex": "0x0",
+                    "removed": false
+                }
+            ],
+            "status": "0x1",
+            "logsBloom": "0x0000",
+            "effectiveGasPrice": "0xe0fed783"
+        }"#.to_string();
 
         let receipts_to_deserialize = ReceiptsList {
             receipts: vec![receipt1, receipt2],
         };
+
+        let deserialized_receipt1 = Receipt {
+            gas_used: "0x6e675".to_string(),
+            effective_gas_price: "0xe0fed783".to_string(),
+        };
+        let deserialized_receipt2 = Receipt {
+            gas_used: "0x71658".to_string(),
+            effective_gas_price: "0xe0fed783".to_string(),
+        };
+
+        let expected_result = vec![deserialized_receipt1, deserialized_receipt2];
+        let deserialization_result =
+            deserialize_multiple_receipts(receipts_to_deserialize).unwrap();
+
+        assert_eq!(expected_result, deserialization_result);
     }
     /*//////////////////////////////////////////////////////////////
                             SERIALIZATION TESTS
