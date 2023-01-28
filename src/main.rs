@@ -1,4 +1,4 @@
-use foundry2echidna::run;
+use foundry2echidna::cli::run;
 use std::process;
 
 fn main() {
