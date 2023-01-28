@@ -395,17 +395,20 @@ mod parser_tests {
             effective_gas_price: "0xe0fed783".to_string(),
         };
 
-        let tx_array_to_serialize = vec![tx1];
+        let transactions = vec![tx1];
+        let receipts = vec![receipt1];
 
-        let receipts_array_to_serialize = vec![receipt1];
+        let broadcast_to_serialize = Broadcast {
+            transactions,
+            receipts,
+        };
 
         let expected_serialization_result = vec![
             r#"{"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0xb3bd","gas_price":"0xe0fed783","data":"0x202023","value":"0x0"}"#,
         ];
 
-        let serialization_result =
-            serialize_broadcast(tx_array_to_serialize, receipts_array_to_serialize);
+        let serialization_result = serialize_broadcast(broadcast_to_serialize).unwrap();
 
-        assert_eq!(expected_serialization_result, serialization_result.unwrap());
+        assert_eq!(expected_serialization_result, serialization_result);
     }
 }
