@@ -1,5 +1,13 @@
-use foundry2echidna::read_broadcast_file;
+use foundry2echidna::cli::run;
+use std::process;
 
 fn main() {
-    read_broadcast_file("test_json_files/simple_broadcast_test.json").unwrap();
+    run(
+        "test_json_files/test_broadcast.json",
+        "test_json_files/test_broadcast_transformed.json",
+    )
+    .unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {err}");
+        process::exit(1);
+    });
 }
