@@ -6,6 +6,11 @@ use std::{fs::File, io::Read};
 /*//////////////////////////////////////////////////////////////
                         DATA MODEL STRUCTS
 ////////////////////////////////////////////////////////////// */
+#[derive(Deserialize, Debug, PartialEq)]
+struct Broadcast {
+    transactions: Vec<Transaction>,
+    receipts: Vec<Receipt>,
+}
 
 #[derive(Deserialize, Serialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -17,14 +22,6 @@ struct Transaction {
 }
 
 #[derive(Deserialize, Serialize, Debug, PartialEq)]
-struct TransactionDetails {
-    from: String,
-    to: Option<String>,
-    value: String,
-    data: String,
-}
-
-#[derive(Deserialize, Serialize, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 struct Receipt {
     gas_used: String,
@@ -32,6 +29,17 @@ struct Receipt {
     effective_gas_price: String,
 }
 
+#[derive(Deserialize, Serialize, Debug, PartialEq)]
+struct TransactionDetails {
+    from: String,
+    to: Option<String>,
+    value: String,
+    data: String,
+}
+
+/* //////////////////////////////////////////////////////////////
+                ETHENO SERIALIZATION STRUCTS
+////////////////////////////////////////////////////////////// */
 #[derive(Serialize, Debug, PartialEq)]
 struct ContractCreationEvent {
     event: String,
@@ -52,16 +60,6 @@ struct FunctionCallEvent {
     gas_price: String,
     data: String,
     value: String,
-}
-
-/*//////////////////////////////////////////////////////////////
-                    PARSING HELPER STRUCTS
-////////////////////////////////////////////////////////////// */
-
-#[derive(Deserialize, Debug, PartialEq)]
-struct Broadcast {
-    transactions: Vec<Transaction>,
-    receipts: Vec<Receipt>,
 }
 
 /*//////////////////////////////////////////////////////////////
