@@ -142,10 +142,9 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<S
 }
 
 #[allow(dead_code)]
-fn serialize_broadcast(
-    tx_array: Vec<Transaction>,
-    receipts_array: Vec<Receipt>,
-) -> Result<Vec<String>, String> {
+fn serialize_broadcast(broadcast: Broadcast) -> Result<Vec<String>, String> {
+    let tx_array = broadcast.transactions;
+    let receipts_array = broadcast.receipts;
     let mut serialized_tx_and_receipts = vec![];
     for (tx, receipt) in tx_array.into_iter().zip(receipts_array.into_iter()) {
         serialized_tx_and_receipts.push(serialize_transaction(tx, receipt)?);
