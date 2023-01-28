@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use serde_json::{from_str, json, to_string, to_string_pretty};
+use serde_json::{from_str, json, to_string, to_string_pretty, Value};
 use std::{fs::File, io::Read, io::Write};
 
 /*//////////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
 }
 
 fn write_transformed_broadcast_to_file(
-    events: Vec<String>,
+    events: Vec<Value>,
     path_to_file: &str,
 ) -> Result<(), String> {
     let json = json!(events);
@@ -99,6 +99,7 @@ fn write_transformed_broadcast_to_file(
         .map_err(|err| format!("Error while writing to file: {err}"))?;
     Ok(())
 }
+
 /*//////////////////////////////////////////////////////////////
                     DESERIALIZATION FUNCTIONS
 ////////////////////////////////////////////////////////////// */
@@ -111,11 +112,13 @@ fn deserialize_broadcast(broadcast_to_deserialize: &str) -> Result<Broadcast, St
 /*//////////////////////////////////////////////////////////////
                    SERIALIZATION FUNCTIONS
 ////////////////////////////////////////////////////////////// */
-fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<String, String> {
-    let mut serialized_transaction = String::new();
+fn serialize_transaction(
+    transaction: Transaction,
+    receipt: Receipt,
+) -> Result<serde_json::Value, String> {
     match transaction.transaction_type.as_ref() {
         "CREATE" => {
-            let creation_event: ContractCreationEvent = ContractCreationEvent {
+            let creation_event = ContractCreationEvent {
                 event: "ContractCreated".to_string(),
                 from: transaction.transaction.from,
                 contract_address: transaction.contract_address,
@@ -124,13 +127,11 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<S
                 data: transaction.transaction.data,
                 value: transaction.transaction.value,
             };
-            serialized_transaction.push_str(
-                &serde_json::to_string(&creation_event)
-                    .map_err(|err| format!("Failed to serialize creation event: {err}"))?,
-            );
+            Ok(serde_json::to_value(creation_event)
+                .map_err(|err| format!("Failed to serialize creation event: {err}"))?)
         }
         "CALL" => {
-            let function_call_event: FunctionCallEvent = FunctionCallEvent {
+            let function_call_event = FunctionCallEvent {
                 event: "FunctionCall".to_string(),
                 from: transaction.transaction.from,
                 to: transaction
@@ -142,28 +143,24 @@ fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<S
                 data: transaction.transaction.data,
                 value: transaction.transaction.value,
             };
-            serialized_transaction.push_str(
-                &serde_json::to_string(&function_call_event)
-                    .map_err(|err| format!("Failed to serialize function call event: {err}"))?,
-            );
+            Ok(serde_json::to_value(function_call_event)
+                .map_err(|err| format!("Failed to serialize function call event: {err}"))?)
         }
-        _ => {}
+        _ => Ok(serde_json::Value::Null),
     }
-
-    Ok(serialized_transaction)
 }
 
-#[allow(dead_code)]
-fn serialize_broadcast(broadcast: Broadcast) -> Result<Vec<String>, String> {
-    let tx_array = broadcast.transactions;
-    let receipts_array = broadcast.receipts;
+fn serialize_broadcast(broadcast: Broadcast) -> Result<Vec<serde_json::Value>, String> {
     let mut serialized_tx_and_receipts = vec![];
-    for (tx, receipt) in tx_array.into_iter().zip(receipts_array.into_iter()) {
+    for (tx, receipt) in broadcast
+        .transactions
+        .into_iter()
+        .zip(broadcast.receipts.into_iter())
+    {
         serialized_tx_and_receipts.push(serialize_transaction(tx, receipt)?);
     }
     Ok(serialized_tx_and_receipts)
 }
-
 /*//////////////////////////////////////////////////////////////
                         UNIT TESTS
 ////////////////////////////////////////////////////////////// */
