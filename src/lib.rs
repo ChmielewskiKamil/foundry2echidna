@@ -57,15 +57,6 @@ struct FunctionCallEvent {
 /*//////////////////////////////////////////////////////////////
                     PARSING HELPER STRUCTS
 ////////////////////////////////////////////////////////////// */
-#[derive(Deserialize, Debug, PartialEq)]
-struct TransactionsList {
-    transactions: Vec<Transaction>,
-}
-
-#[derive(Deserialize, Debug, PartialEq)]
-struct ReceiptsList {
-    receipts: Vec<Receipt>,
-}
 
 #[derive(Deserialize, Debug, PartialEq)]
 struct Broadcast {
