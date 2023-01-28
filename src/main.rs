@@ -1,5 +1,8 @@
-use foundry2echidna::read_broadcast_file;
+use foundry2echidna::run;
 
 fn main() {
-    read_broadcast_file("test_json_files/simple_broadcast_test.json").unwrap();
+    run(
+        "test_json_files/test_broadcast.json",
+        "test_json_files/test_broadcast_transformed.json",
+    );
 }
