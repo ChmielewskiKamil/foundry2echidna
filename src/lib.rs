@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
-use serde_json::from_str;
-use std::{fs::File, io::Read};
+use serde_json::{from_str, json, to_string, to_string_pretty};
+use std::{fs::File, io::Read, io::Write};
 
 /*//////////////////////////////////////////////////////////////
                         DATA MODEL STRUCTS
@@ -62,10 +62,21 @@ struct FunctionCallEvent {
     value: String,
 }
 
+/* //////////////////////////////////////////////////////////////
+                   MAIN PROGRAM FUNCTION
+////////////////////////////////////////////////////////////// */
+pub fn run(input_path: &str, output_path: &str) -> Result<(), String> {
+    let broadcast_to_deserialize = read_broadcast_file(input_path)?;
+    let broadcast = deserialize_broadcast(&broadcast_to_deserialize)?;
+    let broadcast = serialize_broadcast(broadcast)?;
+    write_transformed_broadcast_to_file(broadcast, output_path)?;
+    Ok(())
+}
+
 /*//////////////////////////////////////////////////////////////
                          FILE HANDLING
 ////////////////////////////////////////////////////////////// */
-pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
+fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
     let mut file =
         File::open(path_to_file).map_err(|err| format!("Error while opening the file: {err}"))?;
 
@@ -75,6 +86,21 @@ pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
     Ok(content)
 }
 
+fn write_transformed_broadcast_to_file(
+    events: Vec<String>,
+    path_to_file: &str,
+) -> Result<(), String> {
+    let json = json!(events);
+    let json_string = to_string(&json).unwrap();
+    // let pretty_json = to_string_pretty(&json_string)
+    //     .map_err(|err| format!("Failed to make json look pretty: {err}"))?;
+    let mut file = File::create(path_to_file)
+        .map_err(|err| format!("Error while creating the file: {err}"))?;
+
+    file.write_all(json_string.as_bytes())
+        .map_err(|err| format!("Error while writing to file: {err}"))?;
+    Ok(())
+}
 /*//////////////////////////////////////////////////////////////
                     DESERIALIZATION FUNCTIONS
 ////////////////////////////////////////////////////////////// */
@@ -87,7 +113,6 @@ fn deserialize_broadcast(broadcast_to_deserialize: &str) -> Result<Broadcast, St
 /*//////////////////////////////////////////////////////////////
                    SERIALIZATION FUNCTIONS
 ////////////////////////////////////////////////////////////// */
-#[allow(dead_code)]
 fn serialize_transaction(transaction: Transaction, receipt: Receipt) -> Result<String, String> {
     let mut serialized_transaction = String::new();
     match transaction.transaction_type.as_ref() {
@@ -611,8 +636,8 @@ mod parser_tests {
 
         let expected_serialization_result = vec![r#"{"event":"ContractCreated","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","contract_address":"0x057ef64E23666F000b34aE31332854aCBd1c8544","gas_used":"0x6e675","gas_price":"0xe0fed783","data":"0x6080604","value":"0x0"}"#.to_string(),r#"{"event":"ContractCreated","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","contract_address":"0x261D8c5e9742e6f7f1076Fa1F560894524e19cad","gas_used":"0x71658","gas_price":"0xe0fed783","data":"0x608060405","value":"0x0"}"#.to_string(), r#"{"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0xb3bd","gas_price":"0xe0fed783","data":"0x202023","value":"0x0"}"#.to_string(), r#"{"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0x473e9","gas_price":"0xe0fed783","data":"0xdfc86b17000000000000000000000000261d8c5e9742e6f7f1076fa1f560894524e19cad","value":"0x0"}"#.to_string()];
 
-        let serialized_broadcast = serialize_broadcast(deserialized_broadcast).unwrap();
+        let events = serialize_broadcast(deserialized_broadcast).unwrap();
 
-        assert_eq!(expected_serialization_result, serialized_broadcast);
+        assert_eq!(expected_serialization_result, events);
     }
 }
