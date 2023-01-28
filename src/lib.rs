@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-#[allow(unused_imports)]
 use serde_json::{from_str, json, to_string, to_string_pretty};
 use std::{fs::File, io::Read, io::Write};
 
@@ -91,13 +90,12 @@ fn write_transformed_broadcast_to_file(
     path_to_file: &str,
 ) -> Result<(), String> {
     let json = json!(events);
-    let json_string = to_string(&json).unwrap();
-    // let pretty_json = to_string_pretty(&json_string)
-    //     .map_err(|err| format!("Failed to make json look pretty: {err}"))?;
+    let pretty_json =
+        to_string_pretty(&json).map_err(|err| format!("Failed to make json look pretty: {err}"))?;
     let mut file = File::create(path_to_file)
         .map_err(|err| format!("Error while creating the file: {err}"))?;
 
-    file.write_all(json_string.as_bytes())
+    file.write_all(pretty_json.as_bytes())
         .map_err(|err| format!("Error while writing to file: {err}"))?;
     Ok(())
 }
