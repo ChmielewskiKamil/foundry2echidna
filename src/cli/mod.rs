@@ -35,23 +35,43 @@ the first one found will be used by default."#
 }
 
 impl Args {
-    pub fn new() -> Self {
+    pub fn new() -> Result<Self, String> {
         let mut args = Self::parse();
         if args.input_path.is_none() {
             let glob_pattern = "broadcast/*.s.sol/31337/run-latest.json";
-            let mut paths = glob(glob_pattern).expect("Failed to match glob pattern");
-            let path = paths.next().expect("No matching paths found");
-            args.input_path = Some(path.unwrap().to_str().unwrap().to_string());
+            let mut paths = match glob(glob_pattern) {
+                Ok(paths) => paths,
+                Err(e) => return Err(e.to_string()),
+            };
+            let path = match paths.next() {
+                Some(path) => path,
+                None => return Err("No matching paths found".to_string()),
+            };
+            args.input_path = Some(match path.unwrap().to_str() {
+                Some(s) => s.to_string(),
+                None => return Err("Failed to convert path to string".to_string()),
+            });
         }
         if args.output_path.is_none() {
-            let dir_path = "src/crytic".to_string();
-            create_dir_all(&dir_path).expect("Failed to create directory");
-            args.output_path = Some(format!("{}/init.json", dir_path));
+            let output_dir = Path::new("src/crytic");
+            match create_dir_all(output_dir) {
+                Ok(_) => {}
+                Err(e) => return Err(e.to_string()),
+            };
+            args.output_path = Some(match output_dir.join("init.json").to_str() {
+                Some(s) => s.to_string(),
+                None => return Err("Failed to convert path to string".to_string()),
+            });
         } else {
-            let output_path = Path::new(args.output_path.as_ref().unwrap());
-            let output_dir = output_path.parent().unwrap();
-            create_dir_all(output_dir).expect("Failed to create directory");
+            let output_path = match Path::new(args.output_path.as_ref().unwrap()).parent() {
+                Some(p) => p,
+                None => return Err("Failed to extract parent directory".to_string()),
+            };
+            match create_dir_all(output_path) {
+                Ok(_) => {}
+                Err(e) => return Err(e.to_string()),
+            };
         }
-        args
+        Ok(args)
     }
 }
