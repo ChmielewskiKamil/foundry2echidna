@@ -19,7 +19,10 @@ pub struct Args {
     #[clap(
         short,
         long,
-        help = "Path to the Foundry broadcast file to be transformed. If not provided, the default path is `broadcast/*.s.sol/31337/run-latest.json`. Please note that if you have a couple of directories in the `broadcast` dir, the first one found will be used by default."
+        help = r#"Path to the Foundry broadcast file to be transformed.
+If not provided, the default path is `broadcast/*.s.sol/31337/run-latest.json`. 
+Please note that if you have a couple of directories in the `broadcast` dir, 
+the first one found will be used by default."#
     )]
     pub input_path: Option<String>,
 
