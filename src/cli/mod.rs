@@ -1,6 +1,6 @@
 use crate::deserialization::deserialize_broadcast;
 use crate::file_handling::{read_broadcast_file, write_transformed_broadcast_to_file};
-use crate::serialization::serialize_broadcast;
+use crate::serialization::{add_account_created_events, serialize_broadcast};
 use clap::Parser;
 use glob::glob;
 use std::{fs::create_dir_all, path::Path};
@@ -9,7 +9,8 @@ pub fn run(input_path: &str, output_path: &str) -> Result<(), String> {
     let broadcast_to_deserialize = read_broadcast_file(input_path)?;
     let broadcast = deserialize_broadcast(&broadcast_to_deserialize)?;
     let broadcast = serialize_broadcast(broadcast)?;
-    write_transformed_broadcast_to_file(&broadcast, output_path)?;
+    let etheno_like_broadcast = add_account_created_events(broadcast)?;
+    write_transformed_broadcast_to_file(&etheno_like_broadcast, output_path)?;
     Ok(())
 }
 
