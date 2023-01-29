@@ -1,6 +1,6 @@
 use crate::data_model::{Broadcast, Receipt, Transaction};
 use serde::Serialize;
-use serde_json::Value;
+use serde_json::{json, Value};
 
 /* //////////////////////////////////////////////////////////////
                 ETHENO SERIALIZATION STRUCTS
@@ -72,6 +72,26 @@ pub fn serialize_broadcast(broadcast: Broadcast) -> Result<Vec<serde_json::Value
         serialized_tx_and_receipts.push(serialize_transaction(tx, receipt)?);
     }
     Ok(serialized_tx_and_receipts)
+}
+
+pub fn add_account_created_events(
+    serialized_broadcast: Vec<serde_json::Value>,
+) -> Result<Vec<serde_json::Value>, String> {
+    let account_created_objects = vec![
+        json!({"event":"AccountCreated", "address": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"}),
+        json!({"event":"AccountCreated", "address": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"}),
+        json!({"event":"AccountCreated", "address": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc"}),
+        json!({"event":"AccountCreated", "address": "0x90f79bf6eb2c4f870365e785982e1f101e93b906"}),
+        json!({"event":"AccountCreated", "address": "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65"}),
+        json!({"event":"AccountCreated", "address": "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc"}),
+        json!({"event":"AccountCreated", "address": "0x976ea74026e726554db657fa54763abd0c3a0aa9"}),
+        json!({"event":"AccountCreated", "address": "0x14dC79964da2C08b23698B3D3cc7Ca32193d9955"}),
+        json!({"event":"AccountCreated", "address": "0x23618e81e3f5cdf7f54c3d65f7fbc0abf5b21e8f"}),
+        json!({"event":"AccountCreated", "address": "0xa0ee7a142d267c1f36714e4a8f75612f20a79720"}),
+    ];
+    let mut etheno_like_broadcast = account_created_objects;
+    etheno_like_broadcast.extend(serialized_broadcast);
+    Ok(etheno_like_broadcast)
 }
 
 #[cfg(test)]
