@@ -1,10 +1,9 @@
 use crate::deserialization::deserialize_broadcast;
 use crate::file_handling::{read_broadcast_file, write_transformed_broadcast_to_file};
 use crate::serialization::serialize_broadcast;
+use clap::Parser;
 use glob::glob;
 use std::{fs::create_dir_all, path::Path};
-
-use clap::Parser;
 
 pub fn run(input_path: &str, output_path: &str) -> Result<(), String> {
     let broadcast_to_deserialize = read_broadcast_file(input_path)?;
