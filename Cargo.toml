@@ -2,6 +2,9 @@
 name = "foundry2echidna"
 version = "0.1.0"
 edition = "2021"
+license = "AGPL-3.0"
+description = "Easily seed Echidna with Foundry broadcast files"
+authors = ["Kamil Chmielewski <www.wizzardhat.com>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -9,4 +12,5 @@ edition = "2021"
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 clap = {version= "4.1.4", features = ["derive"]}
+glob = "0.3.1"
 
