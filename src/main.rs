@@ -1,13 +1,13 @@
-use foundry2echidna::cli::run;
-use std::process;
+use foundry2echidna::cli::{run, Args};
 
 fn main() {
-    run(
-        "test_json_files/test_broadcast.json",
-        "test_json_files/test_broadcast_transformed.json",
-    )
-    .unwrap_or_else(|err| {
-        eprintln!("Problem parsing arguments: {err}");
-        process::exit(1);
-    });
+    let args = Args::new();
+
+    match run(
+        args.input_path.as_ref().unwrap(),
+        args.output_path.as_ref().unwrap(),
+    ) {
+        Ok(_) => println!("Success"),
+        Err(e) => eprintln!("Error: {}", e),
+    }
 }
