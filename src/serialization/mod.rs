@@ -388,4 +388,31 @@ mod serialization_tests {
 
         assert_eq!(expected_serialization_result, events);
     }
+    #[test]
+    fn it_should_add_account_created_events_at_the_top() {
+        let serialized_broadcast_events: Vec<serde_json::Value> = vec![
+            json!({"event":"ContractCreated","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","contract_address":"0x057ef64E23666F000b34aE31332854aCBd1c8544","gas_used":"0x6e675","gas_price":"0xe0fed783","data":"0x6080604","value":"0x0"}),
+            json!({"event":"ContractCreated","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","contract_address":"0x261D8c5e9742e6f7f1076Fa1F560894524e19cad","gas_used":"0x71658","gas_price":"0xe0fed783","data":"0x608060405","value":"0x0"}),
+            json!({"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0xb3bd","gas_price":"0xe0fed783","data":"0x202023","value":"0x0"}),
+            json!({"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0x473e9","gas_price":"0xe0fed783","data":"0xdfc86b17000000000000000000000000261d8c5e9742e6f7f1076fa1f560894524e19cad","value":"0x0"}),
+        ];
+        let expected_result: Vec<serde_json::Value> = vec![
+            json!({"event":"AccountCreated", "address": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"}),
+            json!({"event":"AccountCreated", "address": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"}),
+            json!({"event":"AccountCreated", "address": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc"}),
+            json!({"event":"AccountCreated", "address": "0x90f79bf6eb2c4f870365e785982e1f101e93b906"}),
+            json!({"event":"AccountCreated", "address": "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65"}),
+            json!({"event":"AccountCreated", "address": "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc"}),
+            json!({"event":"AccountCreated", "address": "0x976ea74026e726554db657fa54763abd0c3a0aa9"}),
+            json!({"event":"AccountCreated", "address": "0x14dC79964da2C08b23698B3D3cc7Ca32193d9955"}),
+            json!({"event":"AccountCreated", "address": "0x23618e81e3f5cdf7f54c3d65f7fbc0abf5b21e8f"}),
+            json!({"event":"AccountCreated", "address": "0xa0ee7a142d267c1f36714e4a8f75612f20a79720"}),
+            json!({"event":"ContractCreated","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","contract_address":"0x057ef64E23666F000b34aE31332854aCBd1c8544","gas_used":"0x6e675","gas_price":"0xe0fed783","data":"0x6080604","value":"0x0"}),
+            json!({"event":"ContractCreated","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","contract_address":"0x261D8c5e9742e6f7f1076Fa1F560894524e19cad","gas_used":"0x71658","gas_price":"0xe0fed783","data":"0x608060405","value":"0x0"}),
+            json!({"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0xb3bd","gas_price":"0xe0fed783","data":"0x202023","value":"0x0"}),
+            json!({"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0x473e9","gas_price":"0xe0fed783","data":"0xdfc86b17000000000000000000000000261d8c5e9742e6f7f1076fa1f560894524e19cad","value":"0x0"}),
+        ];
+        let addition_result = add_account_created_events(serialized_broadcast_events);
+        assert_eq!(expected_result, addition_result);
+    }
 }
