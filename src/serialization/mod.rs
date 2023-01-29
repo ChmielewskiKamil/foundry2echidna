@@ -147,13 +147,13 @@ mod serialization_tests {
                 data: "0x202023".to_string(),
             },
         };
-        let receipt1 = Receipt {
+        let rcp1 = Receipt {
             gas_used: "0xb3bd".to_string(),
             effective_gas_price: "0xe0fed783".to_string(),
         };
 
         let transactions = vec![tx1];
-        let receipts = vec![receipt1];
+        let receipts = vec![rcp1];
 
         let broadcast_to_serialize = Broadcast {
             transactions,
@@ -375,7 +375,7 @@ mod serialization_tests {
     "timestamp": 1668342002,
     "commit": "cba0070"
 }"#;
-        let deserialized_broadcast = deserialize_broadcast(&broadcast_to_deserialize).unwrap();
+        let deserialized_broadcast = deserialize_broadcast(broadcast_to_deserialize).unwrap();
 
         let expected_serialization_result = vec![
             json!({"event":"ContractCreated","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","contract_address":"0x057ef64E23666F000b34aE31332854aCBd1c8544","gas_used":"0x6e675","gas_price":"0xe0fed783","data":"0x6080604","value":"0x0"}),

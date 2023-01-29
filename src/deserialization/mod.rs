@@ -4,7 +4,7 @@ use crate::data_model::Broadcast;
 ////////////////////////////////////////////////////////////// */
 pub fn deserialize_broadcast(broadcast_to_deserialize: &str) -> Result<Broadcast, String> {
     let broadcast: Broadcast = serde_json::from_str(broadcast_to_deserialize)
-        .map_err(|err| format!("Failed to deserialize broadcast: {}", err))?;
+        .map_err(|err| format!("Failed to deserialize broadcast: {err}"))?;
     Ok(broadcast)
 }
 

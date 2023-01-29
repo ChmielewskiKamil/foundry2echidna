@@ -14,7 +14,7 @@ pub fn read_broadcast_file(path_to_file: &str) -> Result<String, String> {
 }
 
 pub fn write_transformed_broadcast_to_file(
-    events: Vec<Value>,
+    events: &[Value],
     path_to_file: &str,
 ) -> Result<(), String> {
     let json = json!(events);

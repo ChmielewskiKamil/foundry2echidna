@@ -3,13 +3,13 @@ use serde::{Deserialize, Serialize};
 /*//////////////////////////////////////////////////////////////
                         DATA MODEL STRUCTS
 ////////////////////////////////////////////////////////////// */
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Debug, PartialEq, Eq)]
 pub struct Broadcast {
     pub transactions: Vec<Transaction>,
     pub receipts: Vec<Receipt>,
 }
 
-#[derive(Deserialize, Serialize, Debug, PartialEq)]
+#[derive(Deserialize, Serialize, Debug, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
     #[serde(rename(serialize = "event"))]
@@ -18,7 +18,7 @@ pub struct Transaction {
     pub transaction: TransactionDetails,
 }
 
-#[derive(Deserialize, Serialize, Debug, PartialEq)]
+#[derive(Deserialize, Serialize, Debug, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Receipt {
     pub gas_used: String,
@@ -26,7 +26,7 @@ pub struct Receipt {
     pub effective_gas_price: String,
 }
 
-#[derive(Deserialize, Serialize, Debug, PartialEq)]
+#[derive(Deserialize, Serialize, Debug, PartialEq, Eq)]
 pub struct TransactionDetails {
     pub from: String,
     pub to: Option<String>,
