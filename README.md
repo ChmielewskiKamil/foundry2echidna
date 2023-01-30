@@ -64,7 +64,7 @@ I am working on a fix, so this shouldn't be an issue soon.
 - Getting contract addresses from the JSON files is painful for complex contracts.
 I am working on a printer that will list all of the deployed contracts.
 
-### Data Model
+### Data Model (inner workings)
 
 Etheno handles two main groups of events* (via `EventSummaryPlugin`):
 
