@@ -64,6 +64,17 @@ I am working on a fix, so this shouldn't be an issue soon.
 - Getting contract addresses from the JSON files is painful for complex contracts.
 I am working on a printer that will list all of the deployed contracts.
 
+### Integrate foundry2echinda with your project
+
+[Here you can find dev documentation on crates.io](https://docs.rs/foundry2echidna/0.1.0/foundry2echidna/).
+
+You can use the `transform_broadcast` function that takes two arguments:
+
+- input_path
+- output_path
+
+to deserialize and serialize broadcast files.
+
 ### Data Model (inner workings)
 
 Etheno handles two main groups of events* (via `EventSummaryPlugin`):
