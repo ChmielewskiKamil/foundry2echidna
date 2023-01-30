@@ -5,7 +5,22 @@ use clap::Parser;
 use glob::glob;
 use std::{fs::create_dir_all, path::Path};
 
-pub fn run(input_path: &str, output_path: &str) -> Result<(), String> {
+/// Transforms a Foundry broadcast file into a format that is compatible with Echidna.
+///
+/// # Arguments
+/// * `input_path` - Path to the Foundry broadcast file to be transformed.
+/// * `output_path` - Path to a file where you want to save the transformed broadcast.
+///
+/// If `input_path` is not provided, the default path is `broadcast/*.s.sol/31337/run-latest.json`.
+/// If `output_path` is not provided, the default path is `src/crytic/init.json`.
+///
+/// # Examples
+///
+/// ```
+/// use foundry2echidna::cli::transform_broadcast;
+/// transform_broadcast("tests/data/input.json", "tests/data/output.json").unwrap();
+/// ```
+pub fn transform_broadcast(input_path: &str, output_path: &str) -> Result<(), String> {
     let broadcast_to_deserialize = read_broadcast_file(input_path)?;
     let broadcast = deserialize_broadcast(&broadcast_to_deserialize)?;
     let broadcast = serialize_broadcast(broadcast)?;
