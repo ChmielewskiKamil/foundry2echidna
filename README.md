@@ -3,7 +3,7 @@ The purpose of this tool is to transform the foundry broadcast JSON file to an E
 
 ### Demo
 
-[Demo GIF](https://github.com/ChmielewskiKamil/foundry2echidna/blob/master/Foundry2Echidna%20demo.gif)
+![Demo GIF](https://github.com/ChmielewskiKamil/foundry2echidna/blob/master/Foundry2Echidna%20demo.gif)
 
 ### Installation
 
@@ -29,8 +29,10 @@ By default, if no arguments were passed, the tool will look for the following:
 
 - Your broadcast in `broadcast/*.s.sol/31337/run-latest.json`
 - And will output to `src/crytic/init.json`
+
 You can pass custom input and output paths like this:
 `foundry2echidna --input-path path/to/broadcast.json --output-path path/to/init.json`
+
 Or, for short:
 `foundry2echidna -i path/to/broadcast.json -o path/to/init.json`
 
