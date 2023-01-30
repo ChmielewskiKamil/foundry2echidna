@@ -432,7 +432,7 @@ mod serialization_tests {
             json!({"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0xb3bd","gas_price":"0xe0fed783","data":"0x202023","value":"0x0"}),
             json!({"event":"FunctionCall","from":"0x90f79bf6eb2c4f870365e785982e1f101e93b906","to":"0x057ef64e23666f000b34ae31332854acbd1c8544","gas_used":"0x473e9","gas_price":"0xe0fed783","data":"0xdfc86b17000000000000000000000000261d8c5e9742e6f7f1076fa1f560894524e19cad","value":"0x0"}),
         ];
-        let addition_result = add_account_created_events(serialized_broadcast_events);
+        let addition_result = add_account_created_events(serialized_broadcast_events).unwrap();
         assert_eq!(expected_result, addition_result);
     }
 }
