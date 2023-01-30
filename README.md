@@ -31,6 +31,7 @@ By default, if no arguments were passed, the tool will look for the following:
 - And will output to `src/crytic/init.json`
 
 You can pass custom input and output paths like this:
+
 `foundry2echidna --input-path path/to/broadcast.json --output-path path/to/init.json`
 
 Or, for short:
