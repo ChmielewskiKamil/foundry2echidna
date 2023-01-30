@@ -6,7 +6,7 @@ fn main() {
         .and_then(|(input_path, output_path)| run(&input_path, &output_path))
         .map(|_| println!("Transformed broadcast successfully!"))
         .unwrap_or_else(|e| {
-            eprintln!("Error: {}", e);
+            eprintln!("Error: {e}");
             std::process::exit(1);
         });
 }
