@@ -46,11 +46,11 @@ impl Args {
             };
             let path = match paths.next() {
                 Some(path) => path,
-                None => return Err("No matching paths found".to_string()),
+                None => return Err("No matching input paths found".to_string()),
             };
             args.input_path = Some(match path.unwrap().to_str() {
                 Some(s) => s.to_string(),
-                None => return Err("Failed to convert path to string".to_string()),
+                None => return Err("Failed to convert input path to string".to_string()),
             });
         }
         if args.output_path.is_none() {
@@ -61,12 +61,14 @@ impl Args {
             };
             args.output_path = Some(match output_dir.join("init.json").to_str() {
                 Some(s) => s.to_string(),
-                None => return Err("Failed to convert path to string".to_string()),
+                None => return Err("Failed to convert output path to string".to_string()),
             });
         } else {
             let output_path = match Path::new(args.output_path.as_ref().unwrap()).parent() {
                 Some(p) => p,
-                None => return Err("Failed to extract parent directory".to_string()),
+                None => {
+                    return Err("Failed to extract parent directory from output path".to_string())
+                }
             };
             match create_dir_all(output_path) {
                 Ok(_) => {}
