@@ -66,7 +66,7 @@ I am working on a printer that will list all of the deployed contracts.
 
 ### Integrate foundry2echinda with your project
 
-[Here you can find dev documentation on crates.io](https://docs.rs/foundry2echidna/0.1.0/foundry2echidna/).
+[Here you can find dev documentation on docs.rs](https://docs.rs/foundry2echidna/0.1.0/foundry2echidna/).
 
 You can use the `transform_broadcast` function that takes two arguments:
 
