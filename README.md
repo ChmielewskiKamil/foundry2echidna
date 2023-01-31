@@ -30,17 +30,17 @@ By default, if no arguments were passed, the tool will look for the following:
 - Your broadcast in `broadcast/*.s.sol/31337/run-latest.json`
 - And will output to `src/crytic/init.json`
 
-You can pass custom input and output paths like this:
+  You can pass custom input and output paths like this:
 
-`foundry2echidna --input-path path/to/broadcast.json --output-path path/to/init.json`
+  `foundry2echidna --input-path path/to/broadcast.json --output-path path/to/init.json`
 
-Or, for short:
-`foundry2echidna -i path/to/broadcast.json -o path/to/init.json`
+  Or, for short:
+  `foundry2echidna -i path/to/broadcast.json -o path/to/init.json`
 
 2. Seed Echidna with the generated `init.json` file. Add the following to your `echidna_config.yaml`:
 
-- `initialize: path/to/init.json` (for your custom path)
-- `initialize: src/crytic/init.json` (for the default path, if no arguments were provided)
+- `initialize: path/to/init.json` (for your custom output path)
+- or `initialize: src/crytic/init.json` (for the default output path, if no arguments were provided)
 
 3. Update your `EchidnaTest` contract,
 just like you would be interacting with the contracts deployed on the blockchain.
