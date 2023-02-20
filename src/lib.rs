@@ -18,12 +18,7 @@
 //! following to your `echidna_config.yaml` file:
 //! `initialize: init.json`
 //!
-//! ## Current limitations
-//! The tool does not recognize contracts created by a Factory contracts:
-//! - If the contract is created as a result of a call to another contract, it won't be recognized.
-//!
-//! For all other situtations, it should work without any problem. If you find any other
-//! limitation, please open an issue on the [GitHub repo](https://github.com/ChmielewskiKamil/foundry2echidna)
+//! If you have any problems with the software, please open an issue on the [GitHub repo](https://github.com/ChmielewskiKamil/foundry2echidna)
 pub mod cli;
 mod data_model;
 mod deserialization;
