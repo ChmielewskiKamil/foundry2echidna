@@ -1,6 +1,6 @@
 [package]
 name = "foundry2echidna"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 license = "AGPL-3.0"
 description = "Easily seed Echidna with Foundry broadcast files"
